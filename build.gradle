@@ -1,0 +1,36 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+shadowJar {
+    mainClassName = 'ua.in.smartjava.spark.SimpleExample'
+}
+
+sourceSets {
+    main.java.srcDirs 'src/main'
+    test.java.srcDirs 'src/test'
+}
+
+dependencies {
+    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
+    implementation 'com.google.guava:guava:23.0'
+    compile group: 'com.sparkjava', name: 'spark-core', version: '2.7.1'
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+}
+

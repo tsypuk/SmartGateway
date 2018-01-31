@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+CACHE-CONTROL: max-age=86400
+DATE: Fr, 26 Jan 2018 21:56:29 GMT
+EXT:
+LOCATION: http://192.168.1.6:1900/setup.xml
+OPT: http://schemas.upnp.org/upnp/1/0/ ns=01
+01-NLS: 7af96e40-1aa2-22c1-bcfc-eac9223a69cc
+SERVER: Unspecified, UPnP/1.0, Unspecified
+ST: urn:Belkin:device:**
+USN: uuid:Socket-1_0-324674K1100201::urn:Belkin:device:**
+X-User-Agent: redsonic
