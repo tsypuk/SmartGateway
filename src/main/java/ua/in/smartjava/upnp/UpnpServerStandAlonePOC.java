@@ -1,4 +1,4 @@
-package in.ua.smartjava;
+package ua.in.smartjava.upnp;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -7,7 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 
-public class UpnpServer {
+public class UpnpServerStandAlonePOC {
     private static final String response =
             "HTTP/1.1 200 OK\r\n" +
                     "CACHE-CONTROL: max-age=86400\r\n" +
@@ -48,6 +48,7 @@ public class UpnpServer {
                 }
 
             } catch (SocketTimeoutException e) {
+                e.printStackTrace();
             }
         }
         recSocket.disconnect();

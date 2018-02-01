@@ -17,9 +17,9 @@ repositories {
     mavenCentral()
 }
 
-shadowJar {
-    mainClassName = 'ua.in.smartjava.spark.SimpleExample'
-}
+sourceCompatibility = 1.8
+
+mainClassName = 'ua.in.smartjava.spark.SimpleExample'
 
 sourceSets {
     main.java.srcDirs 'src/main'
@@ -28,8 +28,10 @@ sourceSets {
 
 dependencies {
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.google.guava:guava:23.0'
-    compile group: 'com.sparkjava', name: 'spark-core', version: '2.7.1'
+    compile 'com.sparkjava:spark-core:2.7.1'
+    compile 'org.slf4j:slf4j-simple:1.7.25'
+    compile 'org.projectlombok:lombok:1.16.20'
+
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
