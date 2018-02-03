@@ -19,7 +19,7 @@ repositories {
 
 sourceCompatibility = 1.8
 
-mainClassName = 'ua.in.smartjava.spark.SimpleExample'
+mainClassName = 'ua.in.smartjava.spark.Gateway'
 
 sourceSets {
     main.java.srcDirs 'src/main'
@@ -27,12 +27,14 @@ sourceSets {
 }
 
 dependencies {
-    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     compile 'com.sparkjava:spark-core:2.7.1'
     compile 'org.slf4j:slf4j-simple:1.7.25'
     compile 'org.projectlombok:lombok:1.16.20'
+    compile 'com.google.code.gson:gson:2.8.2'
+    compile 'org.yaml:snakeyaml:1.19'
+
+    compile 'org.mongodb:mongo-java-driver:2.4'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
-

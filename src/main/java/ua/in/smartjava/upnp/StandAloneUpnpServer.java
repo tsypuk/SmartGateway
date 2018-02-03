@@ -7,7 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 
-public class UpnpServerStandAlonePOC {
+public class StandAloneUpnpServer {
     private static final String response =
             "HTTP/1.1 200 OK\r\n" +
                     "CACHE-CONTROL: max-age=86400\r\n" +

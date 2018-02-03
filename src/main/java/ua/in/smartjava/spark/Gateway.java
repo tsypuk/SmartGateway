@@ -2,8 +2,6 @@ package ua.in.smartjava.spark;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -14,6 +12,12 @@ import javax.xml.soap.SOAPMessage;
 
 import lombok.extern.slf4j.Slf4j;
 import spark.Service;
+import ua.in.smartjava.domain.device.DeviceController;
+import ua.in.smartjava.domain.discovery.DiscoveryController;
+import ua.in.smartjava.mongo.CrudRepository;
+import ua.in.smartjava.domain.device.Device;
+import ua.in.smartjava.mongo.MongoData;
+import ua.in.smartjava.snakeyaml.ConfigService;
 import ua.in.smartjava.upnp.DiscoveryService;
 import ua.in.smartjava.generated.SetBinaryState;
 
@@ -21,38 +25,65 @@ import static spark.Spark.*;
 
 @Slf4j
 public class Gateway {
-    public static final int START_PORT = 5321;
-    public static final String ALEXA_IP = "192.168.1.10";
-    public static final String SERVER_IP = "192.168.1.6";
-    //TODO extract sensor to every switch
+    //TODO extract sensor state for every switch. This is emulation POC.
+
+    //TODO add devices reload feature - trigger stream -> service.stop(); run discovery again;
     private static AtomicInteger sensor = new AtomicInteger();
 
-    //Services
-    private static DiscoveryService discoveryService;
+    public static void main(String[] args) throws IOException {
+        final ConfigService configurationService = new ConfigService();
 
-    private static Consumer<Service> buildEmulatedDevices(String uuid, String serial, String deviceName) {
+        final String ALEXA_IP = configurationService.getAlexaIp();
+        final int SEVER_MAX_THREADS = Integer.parseInt(configurationService.getServerConfig().getMaxThreads());
+        final int SERVER_PORT = Integer.parseInt(configurationService.getServerConfig().getPort());
+
+        //Services
+        MongoData mongoData = new MongoData(configurationService.getMongoConfig());
+        final CrudRepository<Device> deviceRepository = mongoData.getRepository(Device.class);
+        final DiscoveryService discoveryService = new DiscoveryService(ALEXA_IP, configurationService.getUpNPConfig());
+
+        //Registering controllers
+        port(SERVER_PORT);
+        new DeviceController(deviceRepository);
+        new DiscoveryController(discoveryService, deviceRepository);
+
+        bootServers(deviceRepository, SEVER_MAX_THREADS);
+    }
+
+    private static void bootServers(final CrudRepository<Device> deviceRepository, int SEVER_MAX_THREADS) {
+        //Registering Jetty servers for each running device
+        deviceRepository.findAll().stream()
+                .forEach(device -> {
+                    int port = Integer.parseInt(device.getPort());
+                    Service service = Service.ignite().port(port).threadPool(SEVER_MAX_THREADS);
+                    log.info("Booting service on port: {}", port);
+                    buildEmulatedDevice(device).accept(service);
+                });
+    }
+
+    private static Consumer<Service> buildEmulatedDevice(Device device) {
         return service -> {
             post("/upnp/event/basicevent1", (request, response) -> {
                 log.info("/upnp/event/basicevent1" + request.userAgent());
-                log.info(deviceName + request.body());
+                log.info(device.getName() + request.body());
                 response.type("text/xml");
                 return buildResponse();
             });
 
             service.get("/setup.xml", (request, response) -> {
-                log.info(deviceName + ": call to /setup.xml");
+                log.info(device.getName() + ": call to /setup.xml");
                 response.type("text/xml");
-                return buildSetup(uuid, serial, deviceName);
+                return buildSetup(device);
             });
 
             service.get("/eventservice.xml", (request, response) -> {
-                log.info(deviceName + ": call to /eventservice.xml");
+                log.info(device.getName() + ": call to /eventservice.xml");
                 response.type("text/xml");
                 return buildEventService();
             });
 
             service.post("/upnp/control/basicevent1", (request, response) -> {
-                log.info(deviceName + ": call to /upnp/control/basicevent1" + request.userAgent());
+                log.info(device.getName() + ": call to /upnp/control/basicevent1" + request.userAgent());
 
                 try {
                     SOAPMessage soapMessage = MessageFactory.newInstance().createMessage(null,
@@ -75,24 +106,6 @@ public class Gateway {
         };
     }
 
-    public static void main(String[] args) throws IOException {
-        ArrayList<String> uuids = new ArrayList<>();
-        String[] deviceNames = {"transmission", "room", "garage", "projector", "kitchen"};
-        List<Service> services = new ArrayList<>();
-        List<String> addresses = new ArrayList<>();
-            for (int i = 0; i < deviceNames.length; i++) {
-                Service service = Service.ignite().port(START_PORT + i).threadPool(10);
-                log.info("Booting service on port: {}", START_PORT + i);
-                buildEmulatedDevices("Socket-1_0-38323636-4558-4dda-9188-cda0e66dfe6a-81" + i, "221517K0101769" + i,
-                        deviceNames[i]).accept(service);
-                uuids.add("Socket-1_0-38323636-4558-4dda-9188-cda0e66dfe6a-81" + i);
-                services.add(service);
-                addresses.add(SERVER_IP + ":" + (START_PORT + i));
-            }
-        discoveryService = new DiscoveryService(ALEXA_IP);
-        discoveryService.startDiscoveryService(20, addresses);
-    }
-
     //TODO Create 2 static resources for 1 and 2. Probably with soap marshaler.
     private static String buildResponse() {
         return
@@ -104,18 +117,18 @@ public class Gateway {
                         "</s:Body> </s:Envelope>\r\n";
     }
 
-    private static String buildSetup(String uuid, String serial, String deviceName) {
+    private static String buildSetup(Device device) {
         return
                 "<root>\n" +
                         "<device>\n" +
                         "<deviceType>urn:Belkin:device:controllee:1</deviceType>\n" +
-                        "<friendlyName>" + deviceName + "</friendlyName>\n" +
+                        "<friendlyName>" + device.getName() + "</friendlyName>\n" +
                         "<manufacturer>Belkin International Inc.</manufacturer>\n" +
                         "<modelName>Socket</modelName>\n" +
                         "<modelNumber>3.1415</modelNumber>\n" +
                         "<modelDescription>Belkin Plugin Socket 1.0</modelDescription>\n" +
-                        "<UDN>uuid:" + uuid + "</UDN>\n" +
-                        "<serialNumber>" + serial + "</serialNumber>\n" +
+                        "<UDN>uuid:Socket-1_0-" + device.getId() + "</UDN>\n" +
+                        "<serialNumber>" + device.getId() + "</serialNumber>\n" +
                         "<binaryState>0</binaryState>\n" +
                         "<serviceList>\n" +
                         "<service>\n" +
