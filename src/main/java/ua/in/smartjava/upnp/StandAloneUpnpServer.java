@@ -1,5 +1,7 @@
 package ua.in.smartjava.upnp;
 
+import org.slf4j.helpers.MessageFormatter;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -7,19 +9,11 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 
+import static ua.in.smartjava.utils.ResourceUtils.loadDataFromFile;
+
 public class StandAloneUpnpServer {
-    private static final String response =
-            "HTTP/1.1 200 OK\r\n" +
-                    "CACHE-CONTROL: max-age=86400\r\n" +
-                    "DATE: Fr, 26 Jan 2018 21:56:29 GMT\r\n" +
-                    "EXT:\r\n" +
-                    "LOCATION: http://192.168.1.6:1900/setup.xml\r\n" +
-                    "OPT: \"http://schemas.upnp.org/upnp/1/0/\"; ns=01\r\n" +
-                    "01-NLS: 7af96e40-1aa2-22c1-bcfc-eac9223a69cc\r\n" +
-                    "SERVER: Unspecified, UPnP/1.0, Unspecified\r\n" +
-                    "ST: urn:Belkin:device:**\r\n" +
-                    "USN: uuid:Socket-1_0-38323636-4558-4dda-9188-cda0e66dfe6a-81::urn:Belkin:device:**\r\n" +
-                    "X-User-Agent: redsonic\r\n\r\n";
+
+    static String response = buildResponse();
 
     public static void main(String[] args) throws IOException {
         MulticastSocket recSocket = new MulticastSocket(null);
@@ -39,6 +33,7 @@ public class StandAloneUpnpServer {
                 System.out.println(input.getAddress().toString());
                 int port = input.getPort();
                 if (originaldata.contains("M-SEARCH * HTTP/1.1")) {
+                    System.out.println(response);
                     byte[] bytes = response.getBytes();
                     DatagramPacket packet = new DatagramPacket(bytes, bytes.length,
                             InetAddress.getByName("192.168.1.10"), port);
@@ -48,10 +43,15 @@ public class StandAloneUpnpServer {
                 }
 
             } catch (SocketTimeoutException e) {
-                e.printStackTrace();
             }
         }
         recSocket.disconnect();
         recSocket.close();
+    }
+
+    private static String buildResponse() {
+        String responsePattern = loadDataFromFile("/response.data", "\r\n");
+        String response = MessageFormatter.format(responsePattern, "192.169.1.6:1600", "someserial").getMessage();
+        return response;
     }
 }

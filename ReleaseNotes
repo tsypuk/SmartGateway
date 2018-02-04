@@ -1,0 +1,61 @@
+New Features:
+Bug Fixes:
+Deprecations:
+Third Party Library Updates:
+
+02/04/2018 v0.0.4
+New Features:
+* Added ResourceUtils to read response from file not from code literals
+* Added validation check of device on registering Device server (all requered fields are proper set)
+* Moved eventservice config to xml file
+* Added release notes
+* Added versioning
+* Created gradle task to build uber jar with dependencies
+* Updated manifest file
+* DeviceConverter added null checks
+
+Bug Fixes:
+* Fixed setup.xml format lost \n\n at the end
+* Fixed default profile location
+
+Deprecations:
+* Removed com.github.jengelman.gradle.plugins:shadow
+
+
+02/03/2018 v0.0.3
+New Features:
+* Added mongoDB, created Mongo Data repository, convertors, entities structure. Raspberry supports mongo version < 2.4
+* Added Rest controller (Gson is used for response), discovery, device endpoints
+* Added configuration loader from yaml
+* All properties are externalized into config.yaml
+* Added feature to support profiles by defining -DactiveProfile=PROFILE_NAME (supports "local" profile)
+* Added 2 profiles for local development and remote usage on raspberry host
+* Turn on/off discovery is triggered from endpoint
+
+Third Party Library Updates:
+* org.mongodb:mongo-java-driver:2.4
+* org.yaml:snakeyaml:1.19
+* com.google.code.gson:gson:2.8.2
+
+
+02/01/2018 v0.0.2
+New Features:
+* Moved to multisocket implementation for every device
+* Updated UPnP discovery service to executor with scheduled tasks
+
+Third Party Library Updates:
+* org.projectlombok:lombok:1.16.20
+* org.slf4j:slf4j-simple:1.7.25
+
+
+01/31/2018 v0.0.1
+New Features:
+* Created server based on java spark
+* Added base UPnP discovery server
+* Added SOAP payload, generated soap classes
+* Created fat jar using shadow plugin
+
+Third Party Library Updates:
+* com.sparkjava:spark-core:2.7.1
+* junit:junit:4.12
+* com.github.jengelman.gradle.plugins:shadow:2.0.1

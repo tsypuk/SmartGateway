@@ -1,5 +1,7 @@
 package ua.in.smartjava.upnp;
 
+import org.slf4j.helpers.MessageFormatter;
+
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -9,6 +11,8 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import ua.in.smartjava.domain.device.Device;
 import ua.in.smartjava.snakeyaml.UPnPConfig;
+
+import static ua.in.smartjava.utils.ResourceUtils.loadDataFromFile;
 
 @Slf4j
 public class UPnPDiscoverable implements Runnable {
@@ -39,7 +43,7 @@ public class UPnPDiscoverable implements Runnable {
 
     public void setStatus(boolean status) {
         this.inService = status;
-        log.info("UPnP Discovery stopping...");
+        log.info("UPnP Discovery change state to: {}", status);
     }
 
     @Override
@@ -60,14 +64,18 @@ public class UPnPDiscoverable implements Runnable {
                     String requestData = new String(inputPacket.getData());
 
                     log.info(requestData);
-                    System.out.println(inputPacket.getAddress().toString());
+                    log.info(inputPacket.getAddress().toString());
                     //TODO add filter check for Alexa IP address - isolate other search requests
 
                     int port = inputPacket.getPort();
                     if (requestData.contains("M-SEARCH * HTTP/1.1")) {
-                        for (Device device : devices){
-                            byte[] bytes = buildResponse(device).getBytes();
-                            DatagramPacket responsePacket = new DatagramPacket(bytes, bytes.length, InetAddress.getByName(deviceIp), port);
+                        log.info("Received search request.");
+                        for (Device device : devices) {
+                            String response = buildResponse(device);
+                            log.info(response);
+                            byte[] bytes = response.getBytes();
+                            DatagramPacket responsePacket = new DatagramPacket(bytes, bytes.length,
+                                    InetAddress.getByName(deviceIp), port);
                             recSocket.send(responsePacket);
                         }
                         log.info("Response is sent with data about {} devices", devices.size());
@@ -82,21 +90,9 @@ public class UPnPDiscoverable implements Runnable {
         log.info("UPnP Discovery stopped...");
     }
 
-// TODO add message formater
-// TODO externalize into resource file
+    //TODO Add DateTime formatting to response
     private String buildResponse(Device device) {
-        return
-                "HTTP/1.1 200 OK\r\n" +
-                        "CACHE-CONTROL: max-age=86400\r\n" +
-                        "DATE: Fr, 26 Jan 2018 21:56:29 GMT\r\n" +
-                        "EXT:\r\n" +
-                        "LOCATION: http://" + device.getAddress() + "/setup.xml\r\n" +
-                        "OPT: \"http://schemas.upnp.org/upnp/1/0/\"; ns=01\r\n" +
-                        "01-NLS: 7af96e40-1aa2-22c1-bcfc-eac9223a69cc\r\n" +
-                        "SERVER: Unspecified, UPnP/1.0, Unspecified\r\n" +
-                        "ST: urn:Belkin:device:**\r\n" +
-                        "USN: uuid:Socket-1_0-" + device.getId() +
-                        "::urn:Belkin:device:**\r\n" +
-                        "X-User-Agent: redsonic\r\n\r\n";
+        String responsePattern = loadDataFromFile("response.data", "\r\n");
+        return MessageFormatter.format(responsePattern, device.getAddress(), device.getId()).getMessage();
     }
 }

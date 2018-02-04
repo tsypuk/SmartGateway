@@ -4,9 +4,11 @@ import org.slf4j.helpers.MessageFormatter;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ua.in.smartjava.mongo.BaseEntity;
 
 @Data
+@EqualsAndHashCode(callSuper=true)
 public class Device extends BaseEntity {
     private String name;
     private String ip;

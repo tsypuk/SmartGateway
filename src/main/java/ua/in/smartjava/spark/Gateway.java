@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -22,6 +23,7 @@ import ua.in.smartjava.upnp.DiscoveryService;
 import ua.in.smartjava.generated.SetBinaryState;
 
 import static spark.Spark.*;
+import static ua.in.smartjava.utils.ResourceUtils.loadDataFromFile;
 
 @Slf4j
 public class Gateway {
@@ -52,7 +54,11 @@ public class Gateway {
 
     private static void bootServers(final CrudRepository<Device> deviceRepository, int SEVER_MAX_THREADS) {
         //Registering Jetty servers for each running device
+        Predicate<Device> notNullPredicate = device -> device.getIp() != null && device.getPort() != null &&
+                device.getName() != null;
+
         deviceRepository.findAll().stream()
+                .filter(notNullPredicate)
                 .forEach(device -> {
                     int port = Integer.parseInt(device.getPort());
                     Service service = Service.ignite().port(port).threadPool(SEVER_MAX_THREADS);
@@ -64,8 +70,8 @@ public class Gateway {
     private static Consumer<Service> buildEmulatedDevice(Device device) {
         return service -> {
             post("/upnp/event/basicevent1", (request, response) -> {
-                log.info("/upnp/event/basicevent1" + request.userAgent());
-                log.info(device.getName() + request.body());
+                log.info("Device {} call to /upnp/event/basicevent1",device.getName());
+                log.info(request.body());
                 response.type("text/xml");
                 return buildResponse();
             });
@@ -77,14 +83,14 @@ public class Gateway {
             });
 
             service.get("/eventservice.xml", (request, response) -> {
-                log.info(device.getName() + ": call to /eventservice.xml");
+                log.info("Device {} call to /eventservice.xml", device.getName());
                 response.type("text/xml");
                 return buildEventService();
             });
 
             service.post("/upnp/control/basicevent1", (request, response) -> {
-                log.info(device.getName() + ": call to /upnp/control/basicevent1" + request.userAgent());
-
+                log.info("Device {} call to /upnp/control/basicevent1", device.getName());
+                log.info(request.body());
                 try {
                     SOAPMessage soapMessage = MessageFactory.newInstance().createMessage(null,
                             new ByteArrayInputStream(request.bodyAsBytes()));
@@ -117,6 +123,7 @@ public class Gateway {
                         "</s:Body> </s:Envelope>\r\n";
     }
 
+    //externalize into resource file
     private static String buildSetup(Device device) {
         return
                 "<root>\n" +
@@ -144,44 +151,7 @@ public class Gateway {
     }
 
     private static String buildEventService() {
-        return
-                "<scpd xmlns=\"urn:Belkin:service-1-0\">" +
-                        "<actionList>" +
-                        "<action>" +
-                        "<name>SetBinaryState</name>" +
-                        "<argumentList>" +
-                        "<argument>" +
-                        "<retval/>" +
-                        "<name>BinaryState</name>" +
-                        "<relatedStateVariable>BinaryState</relatedStateVariable>" +
-                        "<direction>in</direction>" +
-                        "</argument>" +
-                        "</argumentList>" +
-                        "</action>" +
-                        "<action>" +
-                        "<name>GetBinaryState</name>" +
-                        "<argumentList>" +
-                        "<argument>" +
-                        "<retval/>" +
-                        "<name>BinaryState</name>" +
-                        "<relatedStateVariable>BinaryState</relatedStateVariable>" +
-                        "<direction>out</direction>" +
-                        "</argument>" +
-                        "</argumentList>" +
-                        "</action>" +
-                        "</actionList>" +
-                        "<serviceStateTable>" +
-                        "<stateVariable sendEvents=\"yes\">" +
-                        "<name>BinaryState</name>" +
-                        "<dataType>Boolean</dataType>" +
-                        "<defaultValue>0</defaultValue>" +
-                        "</stateVariable>" +
-                        "<stateVariable sendEvents=\"yes\">" +
-                        "<name>level</name>" +
-                        "<dataType>string</dataType>" +
-                        "<defaultValue>0</defaultValue>" +
-                        "</stateVariable>" +
-                        "</serviceStateTable>" +
-                        "</scpd>";
+        String responsePattern = loadDataFromFile("eventService.xml", "\r\n");
+        return responsePattern;
     }
 }

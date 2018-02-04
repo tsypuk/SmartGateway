@@ -25,20 +25,20 @@ public class DeviceConverter implements EntityConverter<Device> {
     @Override
     public BasicDBObject toBasicDBObject(Device device) {
         BasicDBObject searchQuery = new BasicDBObject();
-        searchQuery.put("ip", device.getIp());
-        searchQuery.put("port", device.getPort());
-        searchQuery.put("name", device.getName());
-        searchQuery.put("_id", device.getId());
+        Optional.ofNullable(device.getIp()).map(ip -> searchQuery.put("ip", ip));
+        Optional.ofNullable(device.getPort()).map(port -> searchQuery.put("port", port));
+        Optional.ofNullable(device.getName()).map(name -> searchQuery.put("name", name));
+        Optional.ofNullable(device.getId()).map(id -> searchQuery.put("_id", id));
         return searchQuery;
     }
 
     @Override
     public Device toEntity(DBObject document) {
         return Device.builder()
-                .ip(String.valueOf(document.get("ip")))
-                .port(String.valueOf(document.get("port")))
-                .name(String.valueOf(document.get("name")))
-                .id(String.valueOf(document.get("_id")))
+                .ip(document.get("ip") == null ? null : String.valueOf(document.get("ip")))
+                .port(document.get("port") == null ? null : String.valueOf(document.get("port")))
+                .name(document.get("name") == null ? null :String.valueOf(document.get("name")))
+                .id(document.get("_id") == null ? null :String.valueOf(document.get("_id")))
                 .build();
     }
 }

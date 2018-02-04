@@ -17,11 +17,12 @@ public class ConfigService {
 
     private  <T> T loadFromYaml(String configName, Class<T> clazz) {
         Optional<String> profileName = readActiveProfile();
-        String configFile = profileName.map(profile -> format("/{}_{}.yaml", configName, profile).getMessage())
-                .orElse(configName);
+        String configFile = profileName.map(profile -> format("{}_{}.yaml", configName, profile).getMessage())
+                .orElse(format("{}.yaml",configName).getMessage());
         Yaml yaml = new Yaml();
-        try (InputStream in = ConfigService.class.getResourceAsStream(configFile)) {
-            T config = yaml.loadAs(in, clazz);
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        try (InputStream resourceAsStream = contextClassLoader.getResourceAsStream(configFile)) {
+            T config = yaml.loadAs(resourceAsStream, clazz);
             return config;
         } catch (Exception e) {
             throw new RuntimeException(e);

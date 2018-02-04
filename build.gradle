@@ -1,16 +1,5 @@
 apply plugin: 'java'
 apply plugin: 'application'
-apply plugin: 'com.github.johnrengelman.shadow'
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
-    }
-}
 
 repositories {
     mavenLocal()
@@ -19,7 +8,19 @@ repositories {
 
 sourceCompatibility = 1.8
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'ua.in.smartjava.spark.Gateway'
+        attributes 'Created-By': 'Tsypuk Roman'
+        attributes 'Implementation-Title': 'Smart software gateway for AWS Alexa'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 mainClassName = 'ua.in.smartjava.spark.Gateway'
+version = '0.0.4'
 
 sourceSets {
     main.java.srcDirs 'src/main'
