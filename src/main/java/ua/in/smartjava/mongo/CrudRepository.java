@@ -3,8 +3,10 @@ package ua.in.smartjava.mongo;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
+import com.mongodb.WriteResult;
 
 import org.bson.types.ObjectId;
+import org.slf4j.helpers.MessageFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,18 @@ public class CrudRepository<T extends BaseEntity> {
         documents.insert(document);
         ObjectId id = (ObjectId)document.get( "_id" );
         entity.setId(id.toString());
+    }
+
+    public void update(T entity, String id) {
+
+        if (!id.equalsIgnoreCase(entity.getId())) {
+            throw new RuntimeException(MessageFormatter.format("Id {} in url does not match entity id: {}", id, entity.getId()).getMessage());
+        }
+        BasicDBObject document = entityConverter.toDocument(entity);
+        BasicDBObject updateDocument = new BasicDBObject();
+        updateDocument.append("$set", document);
+
+        documents.update(new BasicDBObject().append("_id", new ObjectId(entity.getId())), updateDocument);
     }
 
     public List<T> findAll() {

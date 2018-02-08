@@ -6,6 +6,8 @@ import ua.in.smartjava.mongo.CrudRepository;
 
 import static spark.Spark.after;
 import static spark.Spark.get;
+import static spark.Spark.post;
+import static spark.Spark.put;
 
 public class DeviceController {
 
@@ -27,6 +29,22 @@ public class DeviceController {
             return "no user";
 //            return new ResponseError("No user with id '%s' found", id);
         }, gson::toJson);
+
+        put("/api/devices/:id", (req, res) -> {
+            String id = req.params(":id");
+            Device device = gson.fromJson(req.body(), Device.class);
+            deviceRepository.update(device, id);
+            res.status(204);
+            return "done";
+
+        });
+
+        post("/api/devices/", (req, res) -> {
+            Device device = gson.fromJson(req.body(), Device.class);
+            deviceRepository.save(device);
+            res.status(204);
+            return "created";
+        });
 
         after((req, res) -> {
             res.type("application/json");
