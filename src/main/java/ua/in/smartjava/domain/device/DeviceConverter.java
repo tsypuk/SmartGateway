@@ -18,7 +18,7 @@ public class DeviceConverter implements EntityConverter<Device> {
         Optional.ofNullable(device.getIp()).map(ip -> document.put("ip", ip));
         Optional.ofNullable(device.getName()).map(name -> document.put("name", name));
         Optional.ofNullable(device.getPort()).map(port -> document.put("port", port));
-        Optional.ofNullable(device.getPort()).map(id -> document.put("_id", id));
+//        Optional.ofNullable(device.getId()).map(id -> document.put("_id", id));
         return new BasicDBObject(document);
     }
 

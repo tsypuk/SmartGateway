@@ -34,3 +34,7 @@ gradle-app.setting
 out/
 *.iml
 .idea_modules/
+
+# React builded files
+src/main/resources/webapp/
+

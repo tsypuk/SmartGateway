@@ -3,6 +3,25 @@ Bug Fixes:
 Deprecations:
 Third Party Library Updates:
 
+02/08/2018 v0.0.4
+New Features:
+* Added webpackaging of react application into uber jar
+* Bootstrapped react application
+* Upgrade material-ui
+* Added add device endpoint; added modal window
+* Added progress cycle on devices loading
+* Refactored discovery switch
+* Added PUT device endpoint, added discovery buttons, device list
+* Added BootController, BootService
+
+Third Party Library Updates:
+* react: ^16.2.0
+* material-ui: ^1.0.0-beta.32
+* material-ui-icons: "1.0.0-beta.17
+* react-dom: ^16.2.0
+* react-scripts: 1.1.0
+
+
 02/04/2018 v0.0.4
 New Features:
 * Added ResourceUtils to read response from file not from code literals
