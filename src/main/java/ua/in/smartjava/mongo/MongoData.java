@@ -1,26 +1,23 @@
 package ua.in.smartjava.mongo;
 
 import com.mongodb.DB;
-import com.mongodb.Mongo;
 
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
 import ua.in.smartjava.domain.device.Device;
-import ua.in.smartjava.domain.device.DeviceConverter;
 import ua.in.smartjava.domain.logrecord.LogRecord;
-import ua.in.smartjava.domain.logrecord.LogRecordConverter;
-import ua.in.smartjava.snakeyaml.MongoConfig;
+import ua.in.smartjava.snakeyaml.Mongo;
 
 public class MongoData {
 
-    private Mongo mongo;
+    private com.mongodb.Mongo mongo;
     private Map<Class, CrudRepository> repositories = new HashMap<>();
 
-    public MongoData(MongoConfig mongoConfig) {
+    public MongoData(Mongo mongoConfig) {
         try {
-            mongo = new Mongo(mongoConfig.getHost(), Integer.parseInt(mongoConfig.getPort()));
+            mongo = new com.mongodb.Mongo(mongoConfig.getHost(), Integer.parseInt(mongoConfig.getPort()));
             final DB database = mongo.getDB(mongoConfig.getDb());
             repositories.put(Device.class,
                     new CrudRepository(new ReflectionEntityConverter(Device.class), database.getCollection("devices")));

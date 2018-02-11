@@ -11,7 +11,7 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 import ua.in.smartjava.domain.device.Device;
-import ua.in.smartjava.snakeyaml.UPnPConfig;
+import ua.in.smartjava.snakeyaml.UPnP;
 
 import static ua.in.smartjava.utils.ResourceUtils.loadDataFromFile;
 
@@ -29,7 +29,7 @@ public class UPnPDiscoverable implements Runnable {
     private final String deviceIp;
     private List<Device> devices;
 
-    public UPnPDiscoverable(String deviceIp, UPnPConfig uPnPConfig) {
+    public UPnPDiscoverable(String deviceIp, UPnP uPnPConfig) {
         this.deviceIp = deviceIp;
         this.ttl = Integer.parseInt(uPnPConfig.getTtl());
         this.socketTimeout = Integer.parseInt(uPnPConfig.getTimeout());

@@ -4,8 +4,14 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static java.text.MessageFormat.format;
+
 /**
  * Uses reflection to load properties from config, reads ENV variables to override values.
+ * Usage examples (any of):
+ *      Mongo.host
+ *      MONGO.HOST
+ *      mongo.host
  */
 public class EnvironmentEnricher<T> {
 
@@ -21,13 +27,15 @@ public class EnvironmentEnricher<T> {
                     field.setAccessible(true);
                     Class<?> type = field.getType();
                     if (type.getCanonicalName().startsWith("java.lang")) {
-                        Optional.ofNullable(getProperty(field.getName())).ifPresent(val -> {
-                            try {
-                                field.set(config, val);
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-                        });
+                        Optional.ofNullable(getProperty(
+                                format("{0}.{1}", config.getClass().getSimpleName(), field.getName())))
+                                .ifPresent(val -> {
+                                    try {
+                                        field.set(config, val);
+                                    } catch (IllegalAccessException e) {
+                                        e.printStackTrace();
+                                    }
+                                });
                     } else {
                         try {
                             process(field.get(config));

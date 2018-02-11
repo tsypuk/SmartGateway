@@ -37,4 +37,5 @@ out/
 
 # React builded files
 src/main/resources/webapp/
+package-lock.json
 

@@ -3,7 +3,7 @@ package ua.in.smartjava.snakeyaml;
 import lombok.Data;
 
 @Data
-public class ServerConfig {
+public class Server {
     private String maxThreads;
     private String port;
 }

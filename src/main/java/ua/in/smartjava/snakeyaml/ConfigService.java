@@ -9,10 +9,10 @@ import static org.slf4j.helpers.MessageFormatter.format;
 
 public class ConfigService {
 
-    private Configuration configuration;
+    private Config configuration;
 
     public ConfigService() {
-        this.configuration = loadFromYaml("config", Configuration.class);
+        this.configuration = loadFromYaml("config", Config.class);
     }
 
     private  <T> T loadFromYaml(String configName, Class<T> clazz) {
@@ -33,7 +33,7 @@ public class ConfigService {
         return Optional.ofNullable(System.getProperty("activeProfile"));
     }
 
-    public Configuration getGlobalConfig() {
+    public Config getGlobalConfig() {
         return configuration;
     }
 
@@ -41,15 +41,15 @@ public class ConfigService {
         return configuration.getAlexaIp();
     }
 
-    public MongoConfig getMongoConfig() {
+    public Mongo getMongoConfig() {
         return configuration.getMongo();
     }
 
-    public UPnPConfig getUpNPConfig() {
+    public UPnP getUpNPConfig() {
         return configuration.getUpnp();
     }
 
-    public ServerConfig getServerConfig() {
+    public Server getServerConfig() {
         return configuration.getServer();
     }
 }

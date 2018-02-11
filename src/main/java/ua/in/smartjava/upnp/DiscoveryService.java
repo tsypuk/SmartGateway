@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import ua.in.smartjava.domain.device.Device;
 import ua.in.smartjava.domain.logrecord.LogService;
-import ua.in.smartjava.snakeyaml.UPnPConfig;
+import ua.in.smartjava.snakeyaml.UPnP;
 
 /**
  * UPnP discovery service
@@ -19,7 +19,7 @@ public class DiscoveryService {
     private final UPnPDiscoverable uPnPDiscoverable;
     private final LogService logService;
 
-    public DiscoveryService(String ip, UPnPConfig uPnPConfig, LogService logService) {
+    public DiscoveryService(String ip, UPnP uPnPConfig, LogService logService) {
         this.logService = logService;
         uPnPDiscoverable = new UPnPDiscoverable(ip, uPnPConfig);
     }
