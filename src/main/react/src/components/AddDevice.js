@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import deviceService from '../services/deviceService';
 import TextField from 'material-ui/TextField';
-import Button from 'material-ui/Button';
+import RaisedButton from 'material-ui/RaisedButton';
 
 export default class AddDevice extends Component {
 
@@ -33,8 +33,10 @@ export default class AddDevice extends Component {
                     </tr>
                     <tr>
                         <td>
-                            <Button variant="raised" color="primary" onClick={this.handleAdd}>Add</Button></td>
-                        <td><Button variant="raised" color="primary" onClick={this.props.handleClose}>Cancel</Button></td>
+                            <RaisedButton primary={true} onClick={this.handleAdd} label="Add"/>
+                        </td>
+                        <td><RaisedButton primary={true} onClick={this.props.handleClose} label="Cancel"/>
+                        </td>
                     </tr>
                     </tbody>
                 </table>

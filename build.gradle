@@ -20,7 +20,7 @@ jar {
 }
 
 mainClassName = 'ua.in.smartjava.spark.Gateway'
-version = '0.0.4'
+version = '0.0.7'
 
 sourceSets {
     main.java.srcDirs 'src/main'
@@ -36,7 +36,6 @@ dependencies {
 
     compile 'org.mongodb:mongo-java-driver:2.4'
 
-    // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
 

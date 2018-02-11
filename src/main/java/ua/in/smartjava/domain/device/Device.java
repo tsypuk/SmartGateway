@@ -2,9 +2,11 @@ package ua.in.smartjava.domain.device;
 
 import org.slf4j.helpers.MessageFormatter;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import ua.in.smartjava.mongo.BaseEntity;
 
 @Data

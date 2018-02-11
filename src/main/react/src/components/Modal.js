@@ -16,7 +16,9 @@ export default class Modal extends React.Component {
         console.log(device);
         return (
             <div>
-                <Dialog title="Dialog With Actions" open={this.props.showModal}>
+                <Dialog
+                    title="Add new emulated device"
+                    open={this.props.showModal}>
                     <AddDevice device={device} key={device.id} handleClose={this.props.handleCloseModal}/>
                 </Dialog>
             </div>

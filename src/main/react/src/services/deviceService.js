@@ -1,7 +1,10 @@
+let host = '192.168.1.5';
+let port = '8080';
+
 export default {
 
     getAllDevices: () =>
-        fetch(`http://localhost:8080/api/devices`, {
+        fetch(`http://${host}:${port}/api/devices`, {
             headers: {
                 'Accept' : 'application/json',
                 'Content-Type' : 'application/json; charset=UTF-8'
@@ -16,7 +19,7 @@ export default {
         }),
 
     getDevicesWithDelay: () =>
-        fetch(`http://localhost:8080/api/devices`, {
+        fetch(`http://${host}:${port}/api/devices`, {
             headers: {
                 'Accept' : 'application/json',
                 'Content-Type' : 'application/json; charset=UTF-8',
@@ -38,7 +41,7 @@ export default {
                 }}),
 
     updateDevice: (device) =>
-        fetch(`http://localhost:8080/api/devices/${device.id}` , {
+        fetch(`http://${host}:${port}/api/devices/${device.id}` , {
             method: 'PUT',
             headers: {
                 'Accept' : 'application/json',
@@ -51,8 +54,21 @@ export default {
             }
         }),
 
+    deleteDevice: (device) =>
+        fetch(`http://${host}:${port}/api/devices/${device.id}` , {
+            method: 'DELETE',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json; charset=UTF-8'
+            }
+        }).then(response => {
+            if (response.code === 204) {
+                console.log('deleted');
+            }
+        }),
+
     addDevice : (device) => {
-        fetch(`http://localhost:8080/api/devices/`, {
+        fetch(`http://${host}:${port}/api/devices/`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -61,7 +77,7 @@ export default {
             body: JSON.stringify(device)
         }).then(response => {
             if (response.code === 204) {
-                console.log('updated');
+                console.log('added');
             }
         })
     }

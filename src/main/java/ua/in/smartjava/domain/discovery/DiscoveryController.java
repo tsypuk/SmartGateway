@@ -21,14 +21,15 @@ public class DiscoveryController {
         Gson gson = new Gson();
 
         //TODO add parameter of seconds for discovery to run
-        post("/api/discovery/:action", (request, response) -> {
-            String action = request.params(":action");
+        post("/api/discovery/", (request, response) -> {
+            Discovery discovery = gson.fromJson(request.body(), Discovery.class);
+            String action = discovery.getAction();
             if ("on".equalsIgnoreCase(action)) {
-                discoveryService.startDiscoveryService(20, deviceRepository.findAll());
+                discoveryService.startDiscoveryService(Integer.parseInt(discovery.getTime()), deviceRepository.findAll());
                 response.status(200);
                 HashMap<String, String> result = new HashMap<>();
                 result.put("status", "Starting discovery");
-                result.put("period", "20");
+                result.put("period", discovery.getTime());
                 result.put("unit", TimeUnit.SECONDS.toString());
                 return result;
             } else if ("off".equalsIgnoreCase(action)) {
@@ -45,4 +46,5 @@ public class DiscoveryController {
             res.type("application/json");
         });
     }
+
 }

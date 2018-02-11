@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
 import DeviceList from '../components/DeviceList'
-import DiscoverySwitchBlock from "../components/DiscoverySwitchBlock";
 
-export default class Dashboard extends Component {
+export default class DeviceOperations extends Component {
 
     render() {
         return (
             <div>
-                <DiscoverySwitchBlock/>
                 <DeviceList/>
             </div>
         );

@@ -1,7 +1,12 @@
 import React, {Component} from 'react';
 import deviceService from '../services/deviceService';
-import TextField from 'material-ui/TextField';
-import Button from 'material-ui/Button';
+import RaisedButton from 'material-ui/RaisedButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/create';
+import {
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
 
 export default class Device extends Component {
 
@@ -15,35 +20,34 @@ export default class Device extends Component {
 
     render() {
         return (
-                <tr>
-                    <td>{this.state.id}</td>
-                    <td>
-                        <TextField id="name" name="name" value={this.state.name} onChange={this.handleInputChange}/>
-                    </td>
-                    <td>
-                        <TextField id="ip" name="ip" value={this.state.ip} onChange={this.handleInputChange}/>
-                    </td>
-                    <td>
-                        <TextField id="port" name="port" value={this.state.port} onChange={this.handleInputChange}/>
-                    </td>
-                    <td>
-                        <Button variant="raised" color="primary" onClick={this.handleSave}>Save</Button>
-                    </td>
-                    <td>
-                        <Button variant="raised" color="primary" onClick={this.handleDelete}>Delete</Button>
-                    </td>
-                </tr>
+                <TableRow key="1">
+                        {/*<Toggle defaultToggled={true} />*/}
+                    <TableRowColumn>{this.state.id}</TableRowColumn>
+                    <TableRowColumn>
+                        {/*<TextField id="name" name="name" value={this.state.name} onChange={this.handleInputChange}/>*/}
+                        {this.state.name}</TableRowColumn>
+                    <TableRowColumn>
+                        {/*<TextField id="ip" name="ip" value={this.state.ip} onChange={this.handleInputChange}/>*/}
+                        {this.state.ip}</TableRowColumn>
+                    <TableRowColumn>
+                        {/*<TextField id="port" name="port" value={this.state.port} onChange={this.handleInputChange}/>*/}
+                        {this.state.port}</TableRowColumn>
+                    <TableRowColumn><RaisedButton primary={true} onClick={this.handleSave} label="Save"/></TableRowColumn>
+                    {/*<FloatingActionButton mini={true}>*/}
+                        {/*<ContentAdd />*/}
+                    {/*</FloatingActionButton>*/}
+                    <TableRowColumn><RaisedButton secondary={true} onClick={this.handleDelete} label="Delete"/></TableRowColumn>
+                </TableRow>
         );
     }
 
     handleSave() {
-        console.log(this.state);
         deviceService.updateDevice(this.state);
     }
 
     handleDelete() {
-        console.log('Delete invoked');
-        console.log(this.state);
+        deviceService.deleteDevice(this.state).then(
+            data => this.props.onDelete());
     }
 
     handleInputChange(event) {

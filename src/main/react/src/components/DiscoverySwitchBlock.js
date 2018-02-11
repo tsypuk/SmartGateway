@@ -1,16 +1,19 @@
 import React, {Component} from 'react';
 import DiscoverySwitch from './DiscoverySwitch';
-import {LinearProgress} from 'material-ui/Progress';
+import LinearProgress from 'material-ui/LinearProgress';
 import TextField from 'material-ui/TextField';
+import './DiscoverySwitchBlock.css';
 
 export default class DiscoverySwitchBlock extends Component {
 
     constructor(props) {
         super(props);
-        this.resetTimer();
-        this.state = {
-            period: 20
-        }
+        this.state =
+            {
+                period: 20,
+                completed: 0,
+                running: false
+            };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onTriggered = this.onTriggered.bind(this);
         this.offTriggered = this.offTriggered.bind(this);
@@ -60,15 +63,17 @@ export default class DiscoverySwitchBlock extends Component {
 
     render() {
         return (
-            <div>UPnP Discovery
-                <TextField id="discoveryTime" name="period" value={this.state.period}
+            <div>UPnP Discovery<br/>
+                <TextField id="discoveryTime" className="discoveryTime" name="period" value={this.state.period}
                            onChange={this.handleInputChange}/>
-                sec
-                <DiscoverySwitch onTriggered={this.onTriggered} block={this} action="Start"
+                sec<br/>
+                <DiscoverySwitch onTriggered={this.onTriggered} block={this} action="Start" primary={true}
+                                 time={this.state.period}
                                  running={this.state.running}/>
-                <DiscoverySwitch offTriggered={this.offTriggered} block={this} action="Stop"
+                <DiscoverySwitch offTriggered={this.offTriggered} block={this} action="Stop" primary={true}
+                                 time={this.state.period}
                                  running={this.state.running}/>
-                <LinearProgress variant="determinate" value={this.state.completed}/>
+                <LinearProgress mode="determinate" value={this.state.completed}/>
             </div>
         );
     }

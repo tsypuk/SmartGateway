@@ -4,7 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 
 public interface EntityConverter<T> {
-    BasicDBObject toDocument(T logRecord);
-    BasicDBObject toBasicDBObject(T device);
+    BasicDBObject toDocument(T entity);
+    BasicDBObject toBasicDBObject(T entity);
     T toEntity(DBObject document);
 }

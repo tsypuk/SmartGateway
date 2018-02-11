@@ -12,10 +12,10 @@ import ua.in.smartjava.mongo.BaseEntity;
 public class LogRecord extends BaseEntity {
     private String record;
     //TODO create convertor to-from LocalDateTime
-    private LocalDateTime localDateTime;
+    private String localDateTime;
 
     @Builder
-    private LogRecord(String record, LocalDateTime localDateTime, String id){
+    private LogRecord(String record, String localDateTime, String id){
         super(id);
         this.record = record;
         this.localDateTime = localDateTime;

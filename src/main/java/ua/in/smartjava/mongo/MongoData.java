@@ -23,9 +23,9 @@ public class MongoData {
             mongo = new Mongo(mongoConfig.getHost(), Integer.parseInt(mongoConfig.getPort()));
             final DB database = mongo.getDB(mongoConfig.getDb());
             repositories.put(Device.class,
-                    new CrudRepository(new DeviceConverter(), database.getCollection("devices")));
+                    new CrudRepository(new ReflectionEntityConverter(Device.class), database.getCollection("devices")));
             repositories.put(LogRecord.class,
-                    new CrudRepository(new LogRecordConverter(), database.getCollection("logrecords")));
+                    new CrudRepository(new ReflectionEntityConverter(LogRecord.class), database.getCollection("logrecords")));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

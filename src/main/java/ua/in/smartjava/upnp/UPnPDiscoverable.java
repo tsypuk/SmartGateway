@@ -1,11 +1,12 @@
 package ua.in.smartjava.upnp;
 
-import org.slf4j.helpers.MessageFormatter;
-
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ public class UPnPDiscoverable implements Runnable {
     private final int upnpPort;
     private final int ttl;
     private final int socketTimeout;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E, dd MMM yyyy HH:mm:ss");
 
     volatile private boolean inService;
     private final String deviceIp;
@@ -90,9 +92,13 @@ public class UPnPDiscoverable implements Runnable {
         log.info("UPnP Discovery stopped...");
     }
 
-    //TODO Add DateTime formatting to response
     private String buildResponse(Device device) {
         String responsePattern = loadDataFromFile("response.data", "\r\n");
-        return MessageFormatter.format(responsePattern, device.getAddress(), device.getId()).getMessage();
+        return MessageFormat.format(responsePattern, device.getAddress(), device.getId(), getDateTime());
+    }
+
+    private String getDateTime() {
+        String formatDateTime = LocalDateTime.now().format(formatter);
+        return MessageFormat.format("{0} GMT",formatDateTime);
     }
 }

@@ -8,6 +8,8 @@ import ua.in.smartjava.domain.boot.BootService;
 import ua.in.smartjava.domain.device.DeviceController;
 import ua.in.smartjava.domain.discovery.DiscoveryController;
 import ua.in.smartjava.domain.device.Device;
+import ua.in.smartjava.domain.logrecord.LogRecord;
+import ua.in.smartjava.domain.logrecord.LogService;
 import ua.in.smartjava.mongo.MongoData;
 import ua.in.smartjava.snakeyaml.ConfigService;
 import ua.in.smartjava.upnp.DiscoveryService;
@@ -25,7 +27,8 @@ public class Gateway {
 
         //Services
         final MongoData mongoData = new MongoData(configurationService.getMongoConfig());
-        final DiscoveryService discoveryService = new DiscoveryService(alexaIp, configurationService.getUpNPConfig());
+        final LogService logService = new LogService(mongoData.getRepository(LogRecord.class));
+        final DiscoveryService discoveryService = new DiscoveryService(alexaIp, configurationService.getUpNPConfig(), logService);
         final BootService bootService = new BootService(mongoData.getRepository(Device.class), severMaxThreads);
 
         //React webapp

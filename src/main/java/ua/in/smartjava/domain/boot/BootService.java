@@ -40,7 +40,7 @@ public class BootService {
         //Registering Jetty servers for each running device
         Predicate<Device> notNullPredicate = device -> device.getIp() != null && device.getPort() != null &&
                 device.getName() != null;
-
+//TODO read only unique ip/port (do not read if was the same)
         deviceRepository.findAll().stream()
                 .filter(notNullPredicate)
                 .forEach(device -> {
@@ -114,7 +114,7 @@ public class BootService {
                         "</s:Body> </s:Envelope>\r\n";
     }
 
-    //externalize into resource file
+    //TODO externalize into resource file
     private static String buildSetup(Device device) {
         return
                 "<root>\n" +

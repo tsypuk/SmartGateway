@@ -1,12 +1,16 @@
+let host = '192.168.1.5';
+let port = '8080';
+
 export default {
 
-    trigger : (action) => {
-        fetch(`http://localhost:8080/api/discovery/${action}`, {
+    trigger : (discovery) => {
+        fetch(`http://${host}:${port}/api/discovery/`, {
             method: 'POST',
             headers: {
                 'Accept' : 'application/json',
                 'Content-Type' : 'application/json; charset=UTF-8'
-            }
+            },
+            body: JSON.stringify(discovery)
         }).then(response => {
             if (response.ok) {
                 return response.json();

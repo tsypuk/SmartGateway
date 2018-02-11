@@ -2,9 +2,13 @@ package ua.in.smartjava.domain.device;
 
 import com.google.gson.Gson;
 
+import java.util.Comparator;
+import java.util.stream.Collectors;
+
 import ua.in.smartjava.mongo.CrudRepository;
 
 import static spark.Spark.after;
+import static spark.Spark.delete;
 import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.put;
@@ -16,7 +20,9 @@ public class DeviceController {
         Gson gson = new Gson();
 
         get("/api/devices", (request, response) -> {
-            return deviceRepository.findAll();
+            return deviceRepository.findAll().stream()
+                    .sorted(Comparator.comparing(Device::getPort))
+                    .collect(Collectors.toList());
         }, gson::toJson);
 
         get("/api/devices/:id", (req, res) -> {
@@ -44,6 +50,13 @@ public class DeviceController {
             deviceRepository.save(device);
             res.status(204);
             return "created";
+        });
+
+        delete("/api/devices/:id", (req, res) -> {
+            String id = req.params(":id");
+            deviceRepository.delete(id);
+            res.status(204);
+            return "deleted";
         });
 
         after((req, res) -> {

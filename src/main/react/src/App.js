@@ -1,12 +1,30 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
+import alexa from './images/alexa.png';
+import lambda from './images/lambda.png';
 import './App.css';
-import Dashboard from "./containers/Dashboard";
+import DeviceOperations from "./containers/DeviceOperations";
+import UPnP from "./containers/UPnP";
+
 import Modal from "./components/Modal"
-import Button from 'material-ui/Button';
+import RaisedButton from 'material-ui/RaisedButton';
+
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import Analytics from "./containers/Analytics";
+import Lambdas from "./containers/Lambdas";
+import Statistics from "./containers/Statistics";
+
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme.js';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import AppBar from 'material-ui/AppBar';
+import Divider from 'material-ui/Divider';
+import Paper from 'material-ui/Paper';
+
+let NIGHT_HOUR = 17;
 
 class App extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -15,7 +33,7 @@ class App extends Component {
             device:
                 {
                     name: '',
-                    ip: '',
+                    ip: '192.168.1.6',
                     port: '',
                     uuid: ''
                 }
@@ -25,39 +43,46 @@ class App extends Component {
     }
 
     handleShowModal() {
-        this.setState(
-            {showModal : true}
-        );
-        console.log(this.state)
+        this.setState({showModal: true});
     }
 
     handleCloseModal() {
-        this.setState(
-            {showModal: false}
-        )
+        this.setState({showModal: false})
     }
 
     render() {
         return (
             <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo"/>
-                    <h1 className="App-title">AWS Alexa smart gateway</h1>
-                </header>
-                <Dashboard/>
-                <Modal
-                    id={this.state.editMode ? 'modal_edit' : 'modal_add'}
-                    title={this.state.editMode ? 'Edit project' : 'Create project'}
-                    cancelLabel="Cancel this action"
-                    submitLabel="Save action"
-                    showModal={this.state.showModal}
-                    onSubmit={this.state.editMode ? this.onEdit : this.onAdd}
-                    onCancel={() => this.onModalCancel()}
-                    device={this.state.device}
-                    handleCloseModal = {this.handleCloseModal}
-                >
-                </Modal>
-                <Button variant="raised" color="primary" onClick={this.handleShowModal}>Add</Button>
+                <MuiThemeProvider
+                    muiTheme={getMuiTheme((new Date().getHours()) > NIGHT_HOUR ? darkBaseTheme : lightBaseTheme)}>
+                    <div>
+                        <AppBar title="AWS Alexa smart gateway"/>
+                        <header
+                            className={(new Date().getHours()) > NIGHT_HOUR ? "App-header-dark" : "App-header-light"}>
+                            <img src={alexa} className="App-logo" alt="alexa dot" width="11%"/>
+                            <img src={lambda} className="App-logo" alt="alexa dot" width="8%"/>
+                        </header>
+                        <UPnP/>
+                        <DeviceOperations/>
+                        <Modal
+                            id={this.state.editMode ? 'modal_edit' : 'modal_add'}
+                            cancelLabel="Cancel this action"
+                            submitLabel="Save action"
+                            showModal={this.state.showModal}
+                            device={this.state.device}
+                            handleCloseModal={this.handleCloseModal}
+                        ></Modal>
+
+                        <Paper zDepth={2}>
+                            <RaisedButton primary={true} onClick={this.handleShowModal} label="Add"/>
+                            <FloatingActionButton secondary={true}><ContentAdd/></FloatingActionButton>
+                            <Divider/>
+                        </Paper>
+                        <Analytics/>
+                        <Lambdas/>
+                        <Statistics/>
+                    </div>
+                </MuiThemeProvider>
             </div>
         );
     }

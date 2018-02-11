@@ -23,7 +23,7 @@ public class ConfigService {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
         try (InputStream resourceAsStream = contextClassLoader.getResourceAsStream(configFile)) {
             T config = yaml.loadAs(resourceAsStream, clazz);
-            return config;
+            return new EnvironmentEnricher<T>().enrichWithEnvVariables(config);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
