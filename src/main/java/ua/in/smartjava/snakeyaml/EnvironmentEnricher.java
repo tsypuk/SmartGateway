@@ -3,6 +3,7 @@ package ua.in.smartjava.snakeyaml;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static java.text.MessageFormat.format;
 
@@ -27,8 +28,8 @@ public class EnvironmentEnricher<T> {
                     field.setAccessible(true);
                     Class<?> type = field.getType();
                     if (type.getCanonicalName().startsWith("java.lang")) {
-                        Optional.ofNullable(getProperty(
-                                format("{0}.{1}", config.getClass().getSimpleName(), field.getName())))
+                        getProperty(
+                                format("{0}.{1}", config.getClass().getSimpleName(), field.getName()))
                                 .ifPresent(val -> {
                                     try {
                                         field.set(config, val);
@@ -48,15 +49,12 @@ public class EnvironmentEnricher<T> {
         return config;
     }
 
-    private String getProperty(String property) {
-        String result = null;
-        if (System.getProperty(property) != null) {
-            result = System.getProperty(property);
-        } else if (System.getProperty(property.toUpperCase()) != null) {
-            result = System.getProperty(property.toUpperCase());
-        } else if (System.getProperty(property.toLowerCase()) != null) {
-            result = System.getProperty(property.toLowerCase());
-        }
-        return result;
+    private Optional<String> getProperty(String property) {
+        Function<String, String> likeAs = (any) -> System.getProperty(property);
+        Function<String, String> upperCase = value -> (value != null) ? value : System.getProperty(property
+                .toUpperCase());
+        Function<String, String> lowerCase = value -> (value != null) ? value : System.getProperty(property
+                .toLowerCase());
+        return Optional.ofNullable(likeAs.andThen(upperCase).andThen(lowerCase).apply(property));
     }
 }

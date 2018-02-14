@@ -1,7 +1,5 @@
 package ua.in.smartjava.domain.logrecord;
 
-import java.time.LocalDateTime;
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

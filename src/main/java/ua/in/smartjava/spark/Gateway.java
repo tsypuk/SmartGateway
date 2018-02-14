@@ -29,7 +29,8 @@ public class Gateway {
         final MongoData mongoData = new MongoData(configurationService.getMongoConfig());
         final LogService logService = new LogService(mongoData.getRepository(LogRecord.class));
         final DiscoveryService discoveryService = new DiscoveryService(alexaIp, configurationService.getUpNPConfig(), logService);
-        final BootService bootService = new BootService(mongoData.getRepository(Device.class), severMaxThreads);
+        final BootService bootService = new BootService(mongoData.getRepository(Device.class), severMaxThreads,
+                logService);
 
         //React webapp
         port(serverPort);

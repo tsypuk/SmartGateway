@@ -1,5 +1,4 @@
-let host = '192.168.1.5';
-let port = '8080';
+import {host, port} from '../config.json';
 
 export default {
 

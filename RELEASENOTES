@@ -3,6 +3,18 @@ Bug Fixes:
 Deprecations:
 Third Party Library Updates:
 
+
+02/14/2018 v0.0.8
+New Features:
+* Added react router
+* Added reload devices feature
+
+Third Party Library Updates:
+* react-router-dom: ^4.2.2
+* react-scripts: 1.1.0
+* webpack: ^3.11.0
+
+
 02/11/2018 v0.0.7
 New Features:
 * Added reflection convertor

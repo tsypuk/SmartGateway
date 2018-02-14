@@ -11,13 +11,14 @@ public class BootController {
         //Boot REST APi
         Gson gson = new Gson();
 
-        post("/api/boot/:id", (req, res) -> {
-            String action = req.params(":id");
-            switch (action) {
+        post("/api/boot/", (request, response) -> {
+            BootAction bootAction = gson.fromJson(request.body(), BootAction.class);
+
+            switch (bootAction.getAction()) {
                 case "stop":
                     bootService.stopDeviceServers();
                     break;
-                case "start":
+                case "reload":
                     bootService.bootDeviceServers();
                     break;
             }

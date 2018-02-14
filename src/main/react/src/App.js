@@ -5,11 +5,6 @@ import './App.css';
 import DeviceOperations from "./containers/DeviceOperations";
 import UPnP from "./containers/UPnP";
 
-import Modal from "./components/Modal"
-import RaisedButton from 'material-ui/RaisedButton';
-
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/add';
 import Analytics from "./containers/Analytics";
 import Lambdas from "./containers/Lambdas";
 import Statistics from "./containers/Statistics";
@@ -19,71 +14,61 @@ import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme.js';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
-import Divider from 'material-ui/Divider';
-import Paper from 'material-ui/Paper';
+import BootDevice from './components/BootDevice';
+
+import {
+    BrowserRouter as Router,
+    Link,
+    Route
+} from 'react-router-dom';
 
 let NIGHT_HOUR = 17;
+let MORNING_HOUR = 8;
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showModal: false,
-            name: 'The text',
-            device:
-                {
-                    name: '',
-                    ip: '192.168.1.6',
-                    port: '',
-                    uuid: ''
-                }
-        }
-        this.handleShowModal = this.handleShowModal.bind(this);
-        this.handleCloseModal = this.handleCloseModal.bind(this);
+
+    check = () => {
+        return ((new Date().getHours() > NIGHT_HOUR) || (new Date().getHours() < MORNING_HOUR));
     }
 
-    handleShowModal() {
-        this.setState({showModal: true});
-    }
 
-    handleCloseModal() {
-        this.setState({showModal: false})
-    }
 
     render() {
         return (
-            <div className="App">
-                <MuiThemeProvider
-                    muiTheme={getMuiTheme((new Date().getHours()) > NIGHT_HOUR ? darkBaseTheme : lightBaseTheme)}>
-                    <div>
-                        <AppBar title="AWS Alexa smart gateway"/>
-                        <header
-                            className={(new Date().getHours()) > NIGHT_HOUR ? "App-header-dark" : "App-header-light"}>
-                            <img src={alexa} className="App-logo" alt="alexa dot" width="11%"/>
-                            <img src={lambda} className="App-logo" alt="alexa dot" width="8%"/>
-                        </header>
-                        <UPnP/>
-                        <DeviceOperations/>
-                        <Modal
-                            id={this.state.editMode ? 'modal_edit' : 'modal_add'}
-                            cancelLabel="Cancel this action"
-                            submitLabel="Save action"
-                            showModal={this.state.showModal}
-                            device={this.state.device}
-                            handleCloseModal={this.handleCloseModal}
-                        ></Modal>
 
-                        <Paper zDepth={2}>
-                            <RaisedButton primary={true} onClick={this.handleShowModal} label="Add"/>
-                            <FloatingActionButton secondary={true}><ContentAdd/></FloatingActionButton>
-                            <Divider/>
-                        </Paper>
-                        <Analytics/>
-                        <Lambdas/>
-                        <Statistics/>
-                    </div>
-                </MuiThemeProvider>
-            </div>
+
+
+            <MuiThemeProvider
+                muiTheme={getMuiTheme(this.check()
+                        ? darkBaseTheme : lightBaseTheme)}>
+                <div>
+                    <AppBar title="AWS Alexa smart gateway"/>
+                    <header
+                        className={this.check() ? "App-header-dark" : "App-header-light"}>
+                        <img src={alexa} className="App-logo" alt="alexa dot" width="11%"/>
+                        <img src={lambda} className="App-logo" alt="alexa dot" width="8%"/>
+                    </header>
+                    <Router>
+                        <div>
+                            <ul>
+                                <li><Link to="/upnp">UPnP</Link></li>
+                                <li><Link to="/stat">STATISTICS</Link></li>
+                                <li><Link to="/lambda">LAMBDA</Link></li>
+                                <li><Link to="/analytics">ANALYTICS</Link></li>
+                                <li><Link to="/device">DEVICE</Link></li>
+                                <li><Link to="/boot">BOOT</Link></li>
+                            </ul>
+                            <Route exact path="/" component={DeviceOperations}/>
+                            <Route exact path="/upnp" component={UPnP}/>
+                            <Route path="/stat" component={Statistics}/>
+                            <Route path="/lambda" component={Lambdas}/>
+                            <Route path="/analytic" component={Analytics}/>
+                            <Route path="/device" component={DeviceOperations}/>
+                            <Route path="/boot" component={BootDevice}/>
+                        </div>
+                    </Router>
+                </div>
+            </MuiThemeProvider>
         );
     }
 }

@@ -15,10 +15,11 @@ import javax.xml.soap.SOAPMessage;
 import lombok.extern.slf4j.Slf4j;
 import spark.Service;
 import ua.in.smartjava.domain.device.Device;
+import ua.in.smartjava.domain.logrecord.LogService;
 import ua.in.smartjava.generated.SetBinaryState;
 import ua.in.smartjava.mongo.CrudRepository;
 
-import static spark.Spark.post;
+import static java.text.MessageFormat.format;
 import static ua.in.smartjava.utils.ResourceUtils.loadDataFromFile;
 
 @Slf4j
@@ -30,9 +31,12 @@ public class BootService {
     private final CrudRepository<Device> deviceRepository;
     private final int SEVER_MAX_THREADS;
 
-    public BootService(CrudRepository<Device> deviceRepository, int sever_max_threads) {
+    private final LogService logService;
+
+    public BootService(CrudRepository<Device> deviceRepository, int sever_max_threads, LogService logService) {
         this.deviceRepository = deviceRepository;
         SEVER_MAX_THREADS = sever_max_threads;
+        this.logService = logService;
     }
 
     public void bootDeviceServers() {
@@ -50,17 +54,19 @@ public class BootService {
                     buildEmulatedDevice(device).accept(service);
                     bootServers.add(service);
                 });
+        logService.logAction(format("Starting emulated devices {0}", bootServers.size()));
     }
 
     public void stopDeviceServers() {
         bootServers.stream()
                 .forEach(Service::stop);
+        logService.logAction(format("Stopped {0} device emulated services.", bootServers.size()));
         bootServers.clear();
     }
 
     private Consumer<Service> buildEmulatedDevice(Device device) {
         return service -> {
-            post("/upnp/event/basicevent1", (request, response) -> {
+            service.post("/upnp/event/basicevent1", (request, response) -> {
                 log.info("Device {} call to /upnp/event/basicevent1", device.getName());
                 log.info(request.body());
                 response.type("text/xml");
