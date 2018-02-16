@@ -3,13 +3,14 @@ import deviceService from '../services/deviceService';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
-export default class AddDevice extends Component {
+export default class ModifyDevice extends Component {
 
     constructor(props) {
         super(props);
         this.state = props.device;
         this.handleAdd = this.handleAdd.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleUpdate = this.handleUpdate.bind(this);
     }
 
     render() {
@@ -18,22 +19,24 @@ export default class AddDevice extends Component {
                 <table>
                     <tbody>
                     <tr>
-                        <td>name</td>
+                        <td>NAME</td>
                         <td><TextField id="name" name="name" value={this.state.name} onChange={this.handleInputChange}/>
                         </td>
                     </tr>
                     <tr>
-                        <td>ip</td>
+                        <td>IP</td>
                         <td><TextField id="ip" name="ip" value={this.state.ip} onChange={this.handleInputChange}/></td>
                     </tr>
                     <tr>
-                        <td>port</td>
+                        <td>PORT</td>
                         <td><TextField id="port" name="port" value={this.state.port} onChange={this.handleInputChange}/>
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            <RaisedButton primary={true} onClick={this.handleAdd} label="Add"/>
+                            <RaisedButton primary={true} onClick={
+                                (this.props.mode === 'modal_add') ? this.handleAdd : this.handleUpdate
+                            } label={(this.props.mode === 'modal_add') ? 'Add' : 'Update'}/>
                         </td>
                         <td><RaisedButton primary={true} onClick={this.props.handleClose} label="Cancel"/>
                         </td>
@@ -45,8 +48,22 @@ export default class AddDevice extends Component {
     }
 
     handleAdd() {
-        deviceService.addDevice(this.state);
-        this.props.handleClose();
+        deviceService.addDevice(this.state)
+            .then(promise => {
+                console.log('add');
+                console.log(promise);
+                this.props.reloadDevices();
+                this.props.handleClose();
+            });
+    }
+
+    handleUpdate() {
+        deviceService.updateDevice(this.state)
+            .then(promise => {
+                      this.props.reloadDevices();
+                      this.props.handleClose();
+                  }
+            );
     }
 
     handleInputChange(event) {

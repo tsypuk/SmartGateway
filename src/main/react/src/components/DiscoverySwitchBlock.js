@@ -4,6 +4,10 @@ import LinearProgress from 'material-ui/LinearProgress';
 import TextField from 'material-ui/TextField';
 import './DiscoverySwitchBlock.css';
 
+const discoveryTimeStyle = {
+    width: '35px'
+};
+
 export default class DiscoverySwitchBlock extends Component {
 
     constructor(props) {
@@ -64,7 +68,7 @@ export default class DiscoverySwitchBlock extends Component {
     render() {
         return (
             <div>UPnP Discovery<br/>
-                <TextField id="discoveryTime" className="discoveryTime" name="period" value={this.state.period}
+                <TextField id="discoveryTime" style={discoveryTimeStyle} className="discoveryTime" name="period" value={this.state.period}
                            onChange={this.handleInputChange}/>
                 sec<br/>
                 <DiscoverySwitch onTriggered={this.onTriggered} block={this} action="Start" primary={true}

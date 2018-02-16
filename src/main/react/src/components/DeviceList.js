@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import Device from "./Device";
-import deviceService from "../services/deviceService"
 import Divider from 'material-ui/Divider';
 import Paper from 'material-ui/Paper';
 import {
@@ -15,13 +14,7 @@ export default class DeviceList extends Component {
 
     constructor(props) {
         super(props);
-        this.state =
-            {
-                devices: [],
-                loading: false,
-                isMounted: false
-            };
-        this.reloadDevices = this.reloadDevices.bind(this);
+        this.reloadDevices = this.props.reloadDevices.bind(this);
     }
 
     componentDidMount() {
@@ -32,24 +25,8 @@ export default class DeviceList extends Component {
         this.setState({isMounted: false})
     }
 
-    reloadDevices() {
-        this.setState({
-                          loading: true,
-                          devices: []
-                      });
-        deviceService.getAllDevices()
-            .then(loaded =>
-                      this.setState(
-                          {
-                              devices: loaded,
-                              loading: false
-                          }
-                      ));
-    }
-
     render() {
-        const {devices, loading} = this.state;
-        console.log(devices);
+        const {devices, loading} = this.props;
         return (
             (loading) ? <div>Loading...</div> : <div>
 
@@ -69,7 +46,11 @@ export default class DeviceList extends Component {
                         <TableBody>
                             {
                                 devices.map(
-                                    device => <Device device={device} key={device.id} onDelete={this.reloadDevices}/>)
+                                    device => <Device device={device}
+                                                      key={device.id}
+                                                      onDelete={this.reloadDevices}
+                                                      showModal={this.props.showModal}
+                                    />)
                             }
                         </TableBody>
                     </Table>

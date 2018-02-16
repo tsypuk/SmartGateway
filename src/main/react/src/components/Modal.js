@@ -1,25 +1,22 @@
 import React from 'react';
 import Dialog from 'material-ui/Dialog';
-import AddDevice from '../components/AddDevice'
+import ModifyDevice from './ModifyDevice'
 
 export default class Modal extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            device: props.device,
-        }
-    }
-
     render() {
-        const {device} = this.state;
-        console.log(device);
+        const {device} = this.props;
+        const deviceId = this.props.device.id || '';
         return (
             <div>
                 <Dialog
-                    title="Add new emulated device"
+                    title={`${this.props.title} ${deviceId}`}
                     open={this.props.showModal}>
-                    <AddDevice device={device} key={device.id} handleClose={this.props.handleCloseModal}/>
+                    <ModifyDevice device={device}
+                                  key={deviceId}
+                                  reloadDevices={this.props.reloadDevices}
+                                  mode={this.props.mode}
+                                  handleClose={this.props.handleCloseModal}/>
                 </Dialog>
             </div>
         );

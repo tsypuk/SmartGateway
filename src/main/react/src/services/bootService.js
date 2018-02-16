@@ -3,7 +3,6 @@ import {host, port} from '../config.json';
 export default {
 
     trigger : (boot) => {
-        console.log(boot);
         fetch(`http://${host}:${port}/api/boot/`, {
             method: 'POST',
             headers: {

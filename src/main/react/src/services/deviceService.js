@@ -1,5 +1,5 @@
 import {host, port} from '../config.json';
-
+//TODO add handlers for response
 export default {
 
     getAllDevices: () =>
@@ -28,7 +28,7 @@ export default {
             .then(response => {
 
                 //Emulate delay
-                var ms = 3000;
+                var ms = 500;
                 var start = new Date().getTime();
                 var end = start;
                 while(end < start + ms) {
@@ -49,7 +49,6 @@ export default {
             body: JSON.stringify(device)
         }).then(response => {
             if (response.code === 204) {
-                console.log('updated');
             }
         }),
 
@@ -62,11 +61,10 @@ export default {
             }
         }).then(response => {
             if (response.code === 204) {
-                console.log('deleted');
             }
         }),
 
-    addDevice : (device) => {
+    addDevice : (device) =>
         fetch(`http://${host}:${port}/api/devices/`, {
             method: 'POST',
             headers: {
@@ -76,9 +74,7 @@ export default {
             body: JSON.stringify(device)
         }).then(response => {
             if (response.code === 204) {
-                console.log('added');
             }
         })
-    }
 
 }

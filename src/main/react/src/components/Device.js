@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import deviceService from '../services/deviceService';
 import RaisedButton from 'material-ui/RaisedButton';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
-import ContentAdd from 'material-ui/svg-icons/content/create';
 import {
     TableRow,
     TableRowColumn,
@@ -13,36 +11,27 @@ export default class Device extends Component {
     constructor(props) {
         super(props);
         this.state = props.device;
-        this.handleSave = this.handleSave.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
     }
 
     render() {
         return (
-                <TableRow key="1">
+                <TableRow key="1" selected={false}>
                         {/*<Toggle defaultToggled={true} />*/}
                     <TableRowColumn>{this.state.id}</TableRowColumn>
-                    <TableRowColumn>
-                        {/*<TextField id="name" name="name" value={this.state.name} onChange={this.handleInputChange}/>*/}
-                        {this.state.name}</TableRowColumn>
-                    <TableRowColumn>
-                        {/*<TextField id="ip" name="ip" value={this.state.ip} onChange={this.handleInputChange}/>*/}
-                        {this.state.ip}</TableRowColumn>
-                    <TableRowColumn>
-                        {/*<TextField id="port" name="port" value={this.state.port} onChange={this.handleInputChange}/>*/}
-                        {this.state.port}</TableRowColumn>
-                    <TableRowColumn><RaisedButton primary={true} onClick={this.handleSave} label="Save"/></TableRowColumn>
-                    {/*<FloatingActionButton mini={true}>*/}
-                        {/*<ContentAdd />*/}
-                    {/*</FloatingActionButton>*/}
+                    <TableRowColumn>{this.state.name}</TableRowColumn>
+                    <TableRowColumn>{this.state.ip}</TableRowColumn>
+                    <TableRowColumn>{this.state.port}</TableRowColumn>
+                    <TableRowColumn><RaisedButton primary={true} onClick={this.handleEdit} label="Edit"/></TableRowColumn>
                     <TableRowColumn><RaisedButton secondary={true} onClick={this.handleDelete} label="Delete"/></TableRowColumn>
                 </TableRow>
         );
     }
 
-    handleSave() {
-        deviceService.updateDevice(this.state);
+    handleEdit() {
+        this.props.showModal(this.state);
     }
 
     handleDelete() {
