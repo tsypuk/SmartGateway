@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Toggle from 'material-ui/Toggle';
 import deviceService from '../services/deviceService';
 import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import {TableRow, TableRowColumn} from 'material-ui/Table';
 
@@ -47,7 +48,13 @@ export default class Toggles extends Component {
         const {devices, loading} = this.state;
         return (
             (loading) ? <div>Loading...</div> : <div width="100px">
+                <div>
+                    <RaisedButton className="reloadDevice" primary={true}
+                                  onClick={this.reloadDevices}
+                                  label="Refresh"/>
+                </div>
                 <Paper zDepth={2}>
+
                     {
                         devices.map(
                             device => <ToggleBlock device={device} key={device.id} trigger={this.trigger}/>

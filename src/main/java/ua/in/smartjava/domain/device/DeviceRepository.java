@@ -17,6 +17,14 @@ public class DeviceRepository extends CrudRepository<Device> {
         super(entityConverter, collection);
     }
 
+    public void turnOn(String id) {
+        updateState(id, State.ON);
+    }
+
+    public void turnOff(String id) {
+        updateState(id, State.OFF);
+    }
+
     public void updateState(String id, State state) {
         Map<String, Object> document = new HashMap<>();
         document.put("state", state.toString());

@@ -1,4 +1,4 @@
-<scpd xmlns="urn:Belkin:service-1-0\">
+<scpd xmlns="urn:Belkin:service-1-0">
     <actionList>
         <action>
             <name>SetBinaryState</name>
