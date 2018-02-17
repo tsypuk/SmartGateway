@@ -3,6 +3,9 @@ import deviceService from '../services/deviceService';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
+const inputStyle = {
+    width: '100px'
+};
 export default class ModifyDevice extends Component {
 
     constructor(props) {
@@ -16,33 +19,51 @@ export default class ModifyDevice extends Component {
     render() {
         return (
             <div>
-                <table>
-                    <tbody>
-                    <tr>
-                        <td>NAME</td>
-                        <td><TextField id="name" name="name" value={this.state.name} onChange={this.handleInputChange}/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>IP</td>
-                        <td><TextField id="ip" name="ip" value={this.state.ip} onChange={this.handleInputChange}/></td>
-                    </tr>
-                    <tr>
-                        <td>PORT</td>
-                        <td><TextField id="port" name="port" value={this.state.port} onChange={this.handleInputChange}/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <RaisedButton primary={true} onClick={
-                                (this.props.mode === 'modal_add') ? this.handleAdd : this.handleUpdate
-                            } label={(this.props.mode === 'modal_add') ? 'Add' : 'Update'}/>
-                        </td>
-                        <td><RaisedButton primary={true} onClick={this.props.handleClose} label="Cancel"/>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <center>
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>NAME</td>
+                            <td><TextField id="name"
+                                           name="name"
+                                           value={this.state.name}
+                                           style={inputStyle}
+                                           onChange={this.handleInputChange}/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>IP</td>
+                            <td><TextField id="ip"
+                                           name="ip"
+                                           value={this.state.ip}
+                                           style={inputStyle}
+                                           onChange={this.handleInputChange}/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PORT</td>
+                            <td><TextField id="port"
+                                           name="port"
+                                           value={this.state.port}
+                                           style={inputStyle}
+                                           onChange={this.handleInputChange}/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <RaisedButton primary={true}
+                                              onClick={(this.props.mode === 'modal_add') ? this.handleAdd : this.handleUpdate}
+                                              label={(this.props.mode === 'modal_add') ? 'Add' : 'Update'}
+                                />
+                            </td>
+                            <td><RaisedButton primary={true}
+                                              onClick={this.props.handleClose}
+                                              label="Cancel"/>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </center>
             </div>
         );
     }
@@ -50,8 +71,6 @@ export default class ModifyDevice extends Component {
     handleAdd() {
         deviceService.addDevice(this.state)
             .then(promise => {
-                console.log('add');
-                console.log(promise);
                 this.props.reloadDevices();
                 this.props.handleClose();
             });

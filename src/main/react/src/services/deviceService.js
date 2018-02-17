@@ -52,6 +52,19 @@ export default {
             }
         }),
 
+    trigger: (deviceId, state) =>
+        fetch(`http://${host}:${port}/api/devices/state/${deviceId}` , {
+            method: 'POST',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json; charset=UTF-8'
+            },
+            body: JSON.stringify({state : state})
+        }).then(response => {
+            if (response.code === 204) {
+            }
+        }),
+
     deleteDevice: (device) =>
         fetch(`http://${host}:${port}/api/devices/${device.id}` , {
             method: 'DELETE',

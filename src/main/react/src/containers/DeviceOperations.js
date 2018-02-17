@@ -8,20 +8,21 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 
 import deviceService from "../services/deviceService"
 
+const defaultDevice =
+    {
+        name: '',
+        ip: '192.168.1.6',
+        port: '',
+        uuid: ''
+    }
+
 export default class DeviceOperations extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             showModal: false,
-            name: 'The text',
-            device:
-                {
-                    name: '',
-                    ip: '192.168.1.6',
-                    port: '',
-                    uuid: ''
-                },
+            device: defaultDevice,
             loading: true,
             devices: []
         }
@@ -36,14 +37,7 @@ export default class DeviceOperations extends Component {
             {
                 showModal: true,
                 editMode: 'modal_add',
-                device:
-                    {
-                        name: '',
-                        ip: '192.168.1.6',
-                        port: '',
-                        uuid: ''
-                    }
-
+                device : defaultDevice
             });
     }
 
@@ -89,7 +83,7 @@ export default class DeviceOperations extends Component {
                     cancelLabel="Cancel this action"
                     submitLabel="Save action"
                     showModal={this.state.showModal}
-                    title={(this.state.editMode === 'modal_edit') ? 'Edit device: ' : 'Add new emulated device'}
+                    title={(this.state.editMode === 'modal_edit') ? 'Edit: ' : 'Add new emulated device'}
                     mode={this.state.editMode}
                     device={this.state.device}
                     handleCloseModal={this.handleCloseModal}

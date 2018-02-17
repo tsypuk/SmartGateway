@@ -10,6 +10,7 @@ import ua.in.smartjava.domain.discovery.DiscoveryController;
 import ua.in.smartjava.domain.device.Device;
 import ua.in.smartjava.domain.logrecord.LogRecord;
 import ua.in.smartjava.domain.logrecord.LogService;
+import ua.in.smartjava.domain.device.DeviceRepository;
 import ua.in.smartjava.mongo.MongoData;
 import ua.in.smartjava.snakeyaml.ConfigService;
 import ua.in.smartjava.upnp.DiscoveryService;
@@ -54,7 +55,8 @@ public class Gateway {
         bootService.bootDeviceServers();
 
         //Controllers
-        new DeviceController(mongoData.getRepository(Device.class));
+
+        new DeviceController((DeviceRepository) mongoData.getRepository(Device.class));
         new DiscoveryController(discoveryService, mongoData.getRepository(Device.class));
         new BootController(bootService);
     }

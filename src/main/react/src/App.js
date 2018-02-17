@@ -15,6 +15,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
 import Boot from './containers/Boot';
+import Toggles from './containers/Toggles';
 
 import {
     BrowserRouter as Router,
@@ -51,7 +52,7 @@ class App extends Component {
                                 <nav className="nav-collapse">
                                     <ul className="tabs primary-nav">
                                         <li className="tabs__item"><Link to="/toggle">Toggles</Link></li>
-                                        <li className="tabs__item"><Link to="/upnp">UPnP Discovery</Link></li>
+                                        <li className="tabs__item"><Link to="/upnp">UPnP</Link></li>
                                         <li className="tabs__item"><Link to="/stat">Statistics</Link></li>
                                         <li className="tabs__item"><Link to="/lambda">Lambda</Link></li>
                                         <li className="tabs__item"><Link to="/analytic">Analytics</Link></li>
@@ -66,6 +67,7 @@ class App extends Component {
                                 <Route path="/analytic" component={Analytics}/>
                                 <Route path="/device" component={DeviceOperations}/>
                                 <Route path="/boot" component={Boot}/>
+                                <Route path="/toggle" component={Toggles}/>
                             </div>
                         </Router>
                         <footer className="App-header-dark" style={discoveryTimeStyle}></footer>

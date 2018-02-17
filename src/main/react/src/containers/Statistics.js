@@ -8,7 +8,7 @@ export default class Statistics extends Component {
         return (
             <div>
                 <Paper zDepth={2}>
-                Statistics<br/>Table with details of invocation
+                Statistics<br/>Table with events history
                     <Divider/>
                 </Paper>
             </div>

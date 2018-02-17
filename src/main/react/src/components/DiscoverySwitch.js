@@ -11,9 +11,11 @@ export default class DiscoverySwitch extends Component {
 
     render() {
         return (
-            <RaisedButton secondary={this.props.secondary} primary={this.props.primary} onClick={this.handleClick}
-                          disabled={
-                              (this.props.action === 'Start') ? this.props.running : !this.props.running}>
+            <RaisedButton secondary={this.props.secondary}
+                          primary={this.props.primary}
+                          onClick={this.handleClick}
+                          disabled={(this.props.action === 'Start') ? this.props.running : !this.props.running}
+            >
                 {this.props.action}
             </RaisedButton>
         )

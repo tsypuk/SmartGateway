@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import DiscoverySwitch from './DiscoverySwitch';
 import LinearProgress from 'material-ui/LinearProgress';
 import TextField from 'material-ui/TextField';
-import './DiscoverySwitchBlock.css';
 
 const discoveryTimeStyle = {
     width: '35px'
@@ -68,16 +67,27 @@ export default class DiscoverySwitchBlock extends Component {
     render() {
         return (
             <div>UPnP Discovery<br/>
-                <TextField id="discoveryTime" style={discoveryTimeStyle} className="discoveryTime" name="period" value={this.state.period}
+                <TextField id="discoveryTime"
+                           style={discoveryTimeStyle}
+                           className="discoveryTime"
+                           name="period"
+                           value={this.state.period}
                            onChange={this.handleInputChange}/>
                 sec<br/>
-                <DiscoverySwitch onTriggered={this.onTriggered} block={this} action="Start" primary={true}
+                <DiscoverySwitch onTriggered={this.onTriggered}
+                                 block={this}
+                                 action="Start"
+                                 primary={true}
                                  time={this.state.period}
                                  running={this.state.running}/>
-                <DiscoverySwitch offTriggered={this.offTriggered} block={this} action="Stop" primary={true}
+                <DiscoverySwitch offTriggered={this.offTriggered}
+                                 block={this}
+                                 action="Stop"
+                                 primary={true}
                                  time={this.state.period}
                                  running={this.state.running}/>
-                <LinearProgress mode="determinate" value={this.state.completed}/>
+                <LinearProgress mode="determinate"
+                                value={this.state.completed}/>
             </div>
         );
     }

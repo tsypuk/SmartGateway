@@ -13,8 +13,8 @@ import java.util.List;
 
 public class CrudRepository<T extends BaseEntity> {
 
-    private final EntityConverter<T> entityConverter;
-    private final DBCollection collection;
+    protected final EntityConverter<T> entityConverter;
+    protected final DBCollection collection;
 
     public CrudRepository(EntityConverter<T> entityConverter, DBCollection collection) {
         this.collection = collection;

@@ -5,8 +5,6 @@ import com.google.gson.Gson;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-import ua.in.smartjava.mongo.CrudRepository;
-
 import static spark.Spark.after;
 import static spark.Spark.delete;
 import static spark.Spark.get;
@@ -15,7 +13,7 @@ import static spark.Spark.put;
 
 public class DeviceController {
 
-    public DeviceController(CrudRepository<Device> deviceRepository) {
+    public DeviceController(DeviceRepository deviceRepository) {
         //Boot REST APi
         Gson gson = new Gson();
 
@@ -51,6 +49,14 @@ public class DeviceController {
             res.status(204);
             return "created";
         });
+
+        post("api/devices/state/:id", ((request, response) -> {
+            String id = request.params(":id");
+            DeviceState deviceState = gson.fromJson(request.body(), DeviceState.class);
+            deviceRepository.updateState(id, deviceState.getState());
+            response.status(204);
+            return "updated";
+        }));
 
         delete("/api/devices/:id", (req, res) -> {
             String id = req.params(":id");

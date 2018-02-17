@@ -18,14 +18,17 @@ export default class Device extends Component {
 
     render() {
         return (
-                <TableRow key="1" selected={false}>
-                        {/*<Toggle defaultToggled={true} />*/}
+                <TableRow key={this.state.id} selected={false}>
                     <TableRowColumn>{this.state.id}</TableRowColumn>
                     <TableRowColumn>{this.state.name}</TableRowColumn>
                     <TableRowColumn>{this.state.ip}</TableRowColumn>
                     <TableRowColumn>{this.state.port}</TableRowColumn>
-                    <TableRowColumn><RaisedButton primary={true} onClick={this.handleEdit} label="Edit"/></TableRowColumn>
-                    <TableRowColumn><RaisedButton secondary={true} onClick={this.handleDelete} label="Delete"/></TableRowColumn>
+                    <TableRowColumn><RaisedButton primary={true}
+                                                  onClick={this.handleEdit}
+                                                  label="Edit"/></TableRowColumn>
+                    <TableRowColumn><RaisedButton secondary={true}
+                                                  onClick={this.handleDelete}
+                                                  label="Delete"/></TableRowColumn>
                 </TableRow>
         );
     }

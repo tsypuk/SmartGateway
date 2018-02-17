@@ -4,6 +4,20 @@ Deprecations:
 Third Party Library Updates:
 
 
+02/17/2018 v0.0.9
+New Features:
+* Added toggle change state endpoint
+* Added toggle page
+* Added analytics page
+* Changed DeviceRepository
+
+Bug Fixes:
+* Changed modal window size
+
+Third Party Library Updates:
+* recharts: ^1.0.0-beta.10
+
+
 02/14/2018 v0.0.8
 New Features:
 * Added react router
