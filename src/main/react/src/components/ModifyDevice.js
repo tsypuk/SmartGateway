@@ -69,7 +69,9 @@ export default class ModifyDevice extends Component {
     }
 
     handleAdd() {
-        deviceService.addDevice(this.state)
+        const dev = this.state;
+        dev.state = "OFF";
+        deviceService.addDevice(dev)
             .then(promise => {
                 this.props.reloadDevices();
                 this.props.handleClose();

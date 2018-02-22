@@ -21,7 +21,7 @@ public class DiscoveryService {
 
     public DiscoveryService(String ip, UPnP uPnPConfig, LogService logService) {
         this.logService = logService;
-        uPnPDiscoverable = new UPnPDiscoverable(ip, uPnPConfig);
+        uPnPDiscoverable = new UPnPDiscoverable(ip, uPnPConfig, logService);
     }
 
     /**

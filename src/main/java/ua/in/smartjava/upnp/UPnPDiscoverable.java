@@ -4,15 +4,16 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
-import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 import ua.in.smartjava.domain.device.Device;
+import ua.in.smartjava.domain.logrecord.LogService;
 import ua.in.smartjava.snakeyaml.UPnP;
 
+import static java.text.MessageFormat.format;
 import static ua.in.smartjava.utils.ResourceUtils.loadDataFromFile;
 
 @Slf4j
@@ -28,8 +29,9 @@ public class UPnPDiscoverable implements Runnable {
     volatile private boolean inService;
     private final String deviceIp;
     private List<Device> devices;
+    private final LogService logService;
 
-    public UPnPDiscoverable(String deviceIp, UPnP uPnPConfig) {
+    public UPnPDiscoverable(String deviceIp, UPnP uPnPConfig, LogService logService) {
         this.deviceIp = deviceIp;
         this.ttl = Integer.parseInt(uPnPConfig.getTtl());
         this.socketTimeout = Integer.parseInt(uPnPConfig.getTimeout());
@@ -37,6 +39,7 @@ public class UPnPDiscoverable implements Runnable {
         this.gatewayIp = uPnPConfig.getGateway();
         this.broadcastIp = uPnPConfig.getBroadcastIp();
         this.inService = true;
+        this.logService = logService;
     }
 
     public void setDevices(List<Device> devices) {
@@ -72,6 +75,9 @@ public class UPnPDiscoverable implements Runnable {
                     int port = inputPacket.getPort();
                     if (requestData.contains("M-SEARCH * HTTP/1.1")) {
                         log.info("Received search request.");
+                        logService.logAction(format("Received M-SEARCH * HTTP/1.1 from {0}",
+                                inputPacket.getAddress().toString()));
+
                         for (Device device : devices) {
                             String response = buildResponse(device);
                             log.info(response);
@@ -94,11 +100,11 @@ public class UPnPDiscoverable implements Runnable {
 
     private String buildResponse(Device device) {
         String responsePattern = loadDataFromFile("response.data", "\r\n");
-        return MessageFormat.format(responsePattern, device.getAddress(), device.getId(), getDateTime());
+        return format(responsePattern, device.getAddress(), device.getId(), getDateTime());
     }
 
     private String getDateTime() {
         String formatDateTime = LocalDateTime.now().format(formatter);
-        return MessageFormat.format("{0} GMT",formatDateTime);
+        return format("{0} GMT",formatDateTime);
     }
 }

@@ -1,7 +1,6 @@
 package ua.in.smartjava.domain.boot;
 
 import java.io.ByteArrayInputStream;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -69,28 +68,36 @@ public class BootService {
     private Consumer<Service> buildEmulatedDevice(Device device) {
         return service -> {
             service.post("/upnp/event/basicevent1", (request, response) -> {
-                log.info("Device {} call to /upnp/event/basicevent1", device.getName());
+                String message = format("Device {0} call to /upnp/event/basicevent1", device.getName());
+                log.info(message);
                 log.info(request.body());
+                logService.logAction(message);
                 response.type("text/xml");
 //                TODO here return always 1. Check if alexa or google home work with event
                 return buildResponse("1");
             });
 
             service.get("/setup.xml", (request, response) -> {
-                log.info(device.getName() + ": call to /setup.xml");
+                String message = format("{0} call to /setup.xml", device.getName());
+                log.info(message);
+                logService.logAction(message);
                 response.type("text/xml");
                 return buildSetup(device);
             });
 
             service.get("/eventservice.xml", (request, response) -> {
-                log.info("Device {} call to /eventservice.xml", device.getName());
+                String message = format("Device {0} call to /eventservice.xml", device.getName());
+                log.info(message);
+                logService.logAction(message);
                 response.type("text/xml");
                 return buildEventService();
             });
 
             service.post("/upnp/control/basicevent1", (request, response) -> {
-                log.info("Device {} call to /upnp/control/basicevent1", device.getName());
+                String message = format("Device {0} call to /upnp/control/basicevent1", device.getName());
+                log.info(message);
                 log.info(request.body());
+                logService.logAction(message);
                 SetBinaryState sensorState = null;
                 try {
                     SOAPMessage soapMessage = MessageFactory.newInstance().createMessage(null,
@@ -120,11 +127,11 @@ public class BootService {
     }
 
     private String buildResponse(String state) {
-        return MessageFormat.format(controlBasicEventResponse, state);
+        return format(controlBasicEventResponse, state);
     }
 
     private static String buildSetup(Device device) {
-        return MessageFormat.format(setupResponse, device.getName(), device.getId());
+        return format(setupResponse, device.getName(), device.getId());
     }
 
     private static String buildEventService() {
