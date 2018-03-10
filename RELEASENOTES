@@ -3,6 +3,20 @@ Bug Fixes:
 Deprecations:
 Third Party Library Updates:
 
+03/10/2018 v0.0.10
+New Features:
+* Project moved to multi module structure
+* Added ui-automation module, based on Kotlin and Groovy Spock
+* UI pages covered with automation
+
+Bug Fixes:
+* Default state of created device is OFF
+
+Third Party Library Updates:
+* kotlin: 1.2.30
+* selenium-java:3.10.0
+* groovy-all:2.4.14
+* spock-core:1.1-groovy-2.4
 
 02/17/2018 v0.0.9
 New Features:

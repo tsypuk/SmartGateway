@@ -1,1 +1,2 @@
 rootProject.name = 'SmartGateway'
+include  "gateway", "ui-automation"
