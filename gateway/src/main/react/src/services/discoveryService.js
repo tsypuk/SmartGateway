@@ -1,5 +1,3 @@
-import {host, port} from '../config.json';
-
 export default {
 
     trigger : (discovery) => {

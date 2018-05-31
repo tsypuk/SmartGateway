@@ -1,5 +1,3 @@
-import {host, port} from '../config.json';
-//TODO add handlers for response
 export default {
 
     getAllDevices: () =>
