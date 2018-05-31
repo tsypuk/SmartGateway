@@ -36,6 +36,6 @@ out/
 .idea_modules/
 
 # React builded files
-src/main/resources/webapp/
+webapp/
 package-lock.json
 

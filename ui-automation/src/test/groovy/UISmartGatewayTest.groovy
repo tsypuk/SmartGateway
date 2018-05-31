@@ -17,10 +17,15 @@ import core.WebDriverFactory
 class UISmartGatewayTest extends Specification {
 
     @Shared
-    private WebDriver driver
+    static WebDriver driver = new WebDriverFactory().getWebDriver("GOOGLECHROME")
+
+    @Delegate
+    static ConfigPage configPage = new ConfigPage(driver)
+
+    @Delegate
+    static TogglePage togglePage = new TogglePage(driver)
 
     def setupSpec() {
-        driver = new WebDriverFactory().getWebDriver("GOOGLECHROME")
         def configLoader = new ConfigLoader("local")
         driver.get(configLoader.pageUrl())
     }
@@ -30,14 +35,11 @@ class UISmartGatewayTest extends Specification {
     }
 
     def "navigate to Toggles page"() {
-        given:
-        def togglePage = new TogglePage(driver)
-
         when:
-        togglePage.clickToggleTab()
+        clickToggleTab()
 
         then:
-        togglePage.getToggleTabText() == "Toggles"
+        getToggleTabText() == "Toggles"
     }
 
     def "navigate to UpnP page"() {
@@ -73,8 +75,10 @@ class UISmartGatewayTest extends Specification {
         lambdaPage.clickLambdaTab()
 
         then:
-        lambdaPage.getLambdaTitle().contains("Lambdas")
-        lambdaPage.getLambdaTabText() == "Lambda"
+        with(lambdaPage) {
+            getLambdaTitle().contains("Lambdas")
+            getLambdaTabText() == "Lambda"
+        }
     }
 
     def "navigate to Analytics page"() {
@@ -85,41 +89,38 @@ class UISmartGatewayTest extends Specification {
         analyticsPage.clickAnalyticsTab()
 
         then:
-        analyticsPage.getAnalyticsTitle().contains("Analytics of toggle usage now this is dummy")
-        analyticsPage.getAnalyticsTabText() == "Analytics"
+        with(analyticsPage) {
+            getAnalyticsTitle().contains("Analytics of toggle usage now this is dummy")
+            getAnalyticsTabText() == "Analytics"
+        }
     }
 
     def "navigate to Configuration page"() {
-        given:
-        def configPage = new ConfigPage(driver)
-
         when:
-        configPage.clickConfigurationTab()
+        clickConfigurationTab()
 
         then:
-        configPage.getConfigurationTabText() == "Configuration"
+        getConfigurationTabText() == "Configuration"
     }
 
     @Unroll
-    def "create #data.size() devices"() {
+    def "create #devices.size() devices"() {
         given:
-        def configPage = new ConfigPage(driver)
-        def togglePage = new TogglePage(driver)
-        configPage.clickConfigurationTab()
+        clickConfigurationTab()
 
         devices.forEach({
-            configPage.clickAddDevice()
-            configPage.inputDeviceName(it.name)
-            configPage.inputDevicePort(it.port)
-            configPage.clickOnAddButton()
+            clickAddDevice()
+            inputDeviceName(it.name)
+            inputDevicePort(it.port)
+            clickOnAddButton()
         })
 
-        togglePage.clickToggleTab()
+        clickToggleTab()
 
         expect:
         devices.forEach({
-            togglePage.getDeviceText(it.name) == it.name
-            togglePage.getToggleStatus(it.name) == state
+            getDeviceText(it.name) == it.name
+            getToggleStatus(it.name) == state
         })
 
         where:
@@ -131,24 +132,21 @@ class UISmartGatewayTest extends Specification {
 
     def "create device, turn/ON toggle"() {
         given:
-        def configPage = new ConfigPage(driver)
-        def togglePage = new TogglePage(driver)
-
-        configPage.clickConfigurationTab()
+        clickConfigurationTab()
 
         and: "create new device"
-        configPage.clickAddDevice()
-        configPage.inputDeviceName(name)
-        configPage.inputDevicePort(port)
-        configPage.clickOnAddButton()
+        clickAddDevice()
+        inputDeviceName(name)
+        inputDevicePort(port)
+        clickOnAddButton()
 
         and: "navigate to Toggle page, turn/ON switch"
-        togglePage.clickToggleTab()
-        togglePage.changeStatus(name)
+        clickToggleTab()
+        changeStatus(name)
 
         expect:
-        togglePage.getDeviceText(name) == name
-        togglePage.getToggleStatus(name) == state
+        getDeviceText(name) == name
+        getToggleStatus(name) == state
 
         where:
         name         | port   | state
@@ -157,27 +155,24 @@ class UISmartGatewayTest extends Specification {
 
     def "create device, turn/ON, turn/OFF"() {
         given:
-        def configPage = new ConfigPage(driver)
-        def togglePage = new TogglePage(driver)
-
-        configPage.clickConfigurationTab()
+        clickConfigurationTab()
 
         and: "create new device"
-        configPage.clickAddDevice()
-        configPage.inputDeviceName(name)
-        configPage.inputDevicePort(port)
-        configPage.clickOnAddButton()
+        clickAddDevice()
+        inputDeviceName(name)
+        inputDevicePort(port)
+        clickOnAddButton()
 
         and: "navigate to Toggle page, turn/ON switch"
-        togglePage.clickToggleTab()
-        togglePage.changeStatus(name)
+        clickToggleTab()
+        changeStatus(name)
 
         and: "turn/OFF switch"
-        togglePage.changeStatus(name)
+        changeStatus(name)
 
         expect:
-        togglePage.getDeviceText(name) == name
-        togglePage.getToggleStatus(name) == state
+        getDeviceText(name) == name
+        getToggleStatus(name) == state
 
         where:
         name            | port   | state
@@ -186,44 +181,39 @@ class UISmartGatewayTest extends Specification {
 
     def "create device, update its properties"() {
         given:
-        def configPage = new ConfigPage(driver)
-        def togglePage = new TogglePage(driver)
-        configPage.clickConfigurationTab()
+        clickConfigurationTab()
 
         and: "create new device"
-        configPage.clickAddDevice()
-        configPage.inputDeviceName(deviceToCreate.name)
-        configPage.inputDevicePort(deviceToCreate.port)
-        configPage.clickOnAddButton()
+        clickAddDevice()
+        inputDeviceName(deviceToCreate.name)
+        inputDevicePort(deviceToCreate.port)
+        clickOnAddButton()
 
         and: "update device settings"
-        configPage.clickEditConfig()
-        configPage.inputDeviceName(deviceToUpdate.name)
-        configPage.inputDevicePort(deviceToUpdate.port)
-        configPage.clickOnAddButton()
+        clickEditConfig()
+        inputDeviceName(deviceToUpdate.name)
+        inputDevicePort(deviceToUpdate.port)
+        clickOnAddButton()
 
         and: "navigate to toggle page"
-        togglePage.clickToggleTab()
+        clickToggleTab()
 
         expect:
-        togglePage.getDeviceText(deviceToUpdate.name) == deviceToUpdate.name
-        togglePage.getToggleStatus(deviceToUpdate.name) == state
+        getDeviceText(deviceToUpdate.name) == deviceToUpdate.name
+        getToggleStatus(deviceToUpdate.name) == state
 
         where:
-        deviceToCreate                  | deviceToUpdate                  | state
-        [port: "5454", name: "device1"] | [port: "6767", name: "device2"] | "OFF"
+        deviceToCreate                     | deviceToUpdate                       | state
+        [port: "5454", name: "deviceInit"] | [port: "6767", name: "deviceUpdate"] | "OFF"
     }
 
     def "navigate to Configuration page, delete all device"() {
-        given:
-        def configPage = new ConfigPage(driver)
-
         when:
-        configPage.clickConfigurationTab()
-        configPage.clearConf()
+        clickConfigurationTab()
+        clearConf()
 
         then:
-        configPage.getConfigurationTabText() == "Configuration"
+        getConfigurationTabText() == "Configuration"
     }
 
     def "navigate to Boot page"() {
@@ -234,8 +224,10 @@ class UISmartGatewayTest extends Specification {
         bootPage.clickBootTab()
 
         then:
-        bootPage.getBootTabText() == "Boot"
-        bootPage.getReloadButtonText() == "RELOAD DEVICES"
+        with(bootPage) {
+            getBootTabText() == "Boot"
+            getReloadButtonText() == "RELOAD DEVICES"
+        }
     }
 
 }

@@ -3,7 +3,7 @@ import {host, port} from '../config.json';
 export default {
 
     getAllDevices: () =>
-        fetch(`http://${host}:${port}/api/devices`, {
+        fetch(`/api/devices`, {
             headers: {
                 'Accept' : 'application/json',
                 'Content-Type' : 'application/json; charset=UTF-8'
@@ -18,7 +18,7 @@ export default {
         }),
 
     getDevicesWithDelay: () =>
-        fetch(`http://${host}:${port}/api/devices`, {
+        fetch(`/api/devices`, {
             headers: {
                 'Accept' : 'application/json',
                 'Content-Type' : 'application/json; charset=UTF-8',
@@ -40,7 +40,7 @@ export default {
                 }}),
 
     updateDevice: (device) =>
-        fetch(`http://${host}:${port}/api/devices/${device.id}` , {
+        fetch(`/api/devices/${device.id}` , {
             method: 'PUT',
             headers: {
                 'Accept' : 'application/json',
@@ -53,7 +53,7 @@ export default {
         }),
 
     trigger: (deviceId, state) =>
-        fetch(`http://${host}:${port}/api/devices/state/${deviceId}` , {
+        fetch(`/api/devices/state/${deviceId}` , {
             method: 'POST',
             headers: {
                 'Accept' : 'application/json',
@@ -66,7 +66,7 @@ export default {
         }),
 
     deleteDevice: (device) =>
-        fetch(`http://${host}:${port}/api/devices/${device.id}` , {
+        fetch(`/api/devices/${device.id}` , {
             method: 'DELETE',
             headers: {
                 'Accept' : 'application/json',
@@ -78,7 +78,7 @@ export default {
         }),
 
     addDevice : (device) =>
-        fetch(`http://${host}:${port}/api/devices/`, {
+        fetch(`/api/devices/`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

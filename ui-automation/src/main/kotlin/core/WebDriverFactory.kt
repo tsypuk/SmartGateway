@@ -14,19 +14,16 @@ import org.openqa.selenium.safari.SafariDriver
 class WebDriverFactory {
 
     fun getWebDriver(browser: String): WebDriver {
-        val driver =
-                when (browser) {
-                    GOOGLECHROME -> ChromeDriver()
-                    FIREFOX -> {
-                        System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null")
-                        FirefoxDriver()
-                    }
-                    IEXPLORE -> InternetExplorerDriver()
-                    SAFARI -> SafariDriver()
-                    else -> ChromeDriver()
-                }
-        driver.configure()
-        return driver
+        return when (browser) {
+            GOOGLECHROME -> ChromeDriver()
+            FIREFOX -> {
+                System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null")
+                FirefoxDriver()
+            }
+            IEXPLORE -> InternetExplorerDriver()
+            SAFARI -> SafariDriver()
+            else -> ChromeDriver()
+        }.apply { configure() }
     }
 
     private fun RemoteWebDriver.configure() {

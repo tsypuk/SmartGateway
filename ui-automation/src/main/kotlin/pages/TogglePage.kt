@@ -27,16 +27,19 @@ class TogglePage(driver: WebDriver) : BasePage(driver) {
     fun getToggleTabText() : String = togglesTab.text
 
     fun getDeviceText(value: String): String {
+        Thread.sleep(500)
         return driver.findElement(
                 xpath(".//td[text()='$value']")).text
     }
 
     fun getToggleStatus(value: String): String {
+        Thread.sleep(500)
         return driver.findElement(
                 xpath(".//td[text()='$value']/preceding-sibling::td[2]")).text
     }
 
     fun changeStatus(value: String) {
+        Thread.sleep(500)
         val toggleButton = driver.findElement(
                 xpath(".//td[text()='$value']/preceding-sibling::td[1]//input"))
         toggleButton.click()

@@ -68,11 +68,11 @@ class ConfigPage(driver: WebDriver) : BasePage(driver) {
                 xpath(".//table//td[text()='$value']/following-sibling::td[2]")).text
     }
 
-    private fun clearConf() {
+    fun clearConf() {
         var deleteNext: Boolean = true
 
         while (deleteNext) {
-            driver.navigate().refresh();
+            Thread.sleep(500)
             val deleteButtons = driver.findElements(
                     xpath(".//tbody/tr[*]/td[last()]//button"))
             if (deleteButtons.isEmpty()) {

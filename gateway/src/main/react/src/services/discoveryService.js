@@ -3,7 +3,7 @@ import {host, port} from '../config.json';
 export default {
 
     trigger : (discovery) => {
-        fetch(`http://${host}:${port}/api/discovery/`, {
+        fetch(`/api/discovery/`, {
             method: 'POST',
             headers: {
                 'Accept' : 'application/json',
