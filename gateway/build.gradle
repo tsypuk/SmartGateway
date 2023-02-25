@@ -8,16 +8,16 @@ repositories {
 
 sourceCompatibility = 1.8
 
-jar {
-    manifest {
-        attributes 'Main-Class': 'ua.in.smartjava.spark.Gateway'
-        attributes 'Created-By': 'Tsypuk Roman'
-        attributes 'Implementation-Title': 'Smart software gateway for AWS Alexa'
-    }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
+//jar {
+//    manifest {
+//        attributes 'Main-Class': 'ua.in.smartjava.spark.Gateway'
+//        attributes 'Created-By': 'Tsypuk Roman'
+//        attributes 'Implementation-Title': 'Smart software gateway for AWS Alexa'
+//    }
+//    from {
+//        configurations.implementation.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
+//}
 
 mainClassName = 'ua.in.smartjava.spark.Gateway'
 version = '0.0.10'
@@ -28,13 +28,14 @@ sourceSets {
 }
 
 dependencies {
-    compile 'com.sparkjava:spark-core:2.7.1'
-    compile 'org.slf4j:slf4j-simple:1.7.25'
-    compile 'org.projectlombok:lombok:1.16.20'
-    compile 'com.google.code.gson:gson:2.8.2'
-    compile 'org.yaml:snakeyaml:1.19'
+    implementation('com.sparkjava:spark-core:2.7.1')
+    implementation('org.slf4j:slf4j-simple:1.7.25')
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    implementation('com.google.code.gson:gson:2.8.2')
+    implementation('org.yaml:snakeyaml:1.19')
 
-    compile 'org.mongodb:mongo-java-driver:2.4'
+    implementation('org.mongodb:mongo-java-driver:2.4')
 
     testImplementation 'junit:junit:4.12'
 }
@@ -49,7 +50,7 @@ task npmBuild(type: Exec, dependsOn: npmInstall) {
     commandLine 'npm', 'run', 'build'
 }
 
-task reactToJar(type: Copy, dependsOn: npmBuild) {
+task reactToJar(type: Copy, dependsOn: [npmBuild, processResources]) {
     clean {
         delete 'src/main/resources/webapp'
     }
@@ -58,3 +59,13 @@ task reactToJar(type: Copy, dependsOn: npmBuild) {
 }
 
 compileJava.dependsOn reactToJar
+
+mainClassName = 'ua.in.smartjava.spark.Gateway'
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'ua.in.smartjava.spark.Gateway'
+        )
+    }
+}
